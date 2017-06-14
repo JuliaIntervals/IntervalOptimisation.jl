@@ -1,17 +1,12 @@
+
+
 module IntervalOptimisation
 
-"""
-    test_function()
+export optimise
 
-Return 1
+include("SortedVectors.jl")
+using .SortedVectors
 
-```jldoctest
-julia> import IntervalOptimisation
-
-julia> IntervalOptimisation.test_function()
-2
-```
-"""
-test_function() = 1
+include("optimise.jl")
 
 end
