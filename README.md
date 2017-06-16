@@ -27,7 +27,7 @@ Currently, the package uses an implementation of the Moore-Skelboe algorithm.
 
 ## Usage  
 
-Functions `minimise` and `maximise` are provided to find the **global** minimum or maximum, respectively, of a standard Julia function ``f:\mathbb{R^n} \to \mathbb{R}``.
+Functions `minimise` and `maximise` are provided to find the **global** minimum or maximum, respectively, of a standard Julia function `f` of one or several variables.
 
 They return an `Interval` that is guaranteed to contain the global minimum (maximum), and a `Vector` of `Interval`s or `IntervalBox`es whose union contains all the minimisers.
 
@@ -38,7 +38,7 @@ They return an `Interval` that is guaranteed to contain the global minimum (maxi
 ```
 using IntervalArithmetic, IntervalOptimisation
 
-julia> @time global_min, minimisers = minimise(x->(x^2-2)^2, -10..11);
+julia> @time global_min, minimisers = minimise(x -> (x^2 - 2)^2, -10..11);
   0.046620 seconds (36.07 k allocations: 1.586 MiB)
 
 julia> global_min
