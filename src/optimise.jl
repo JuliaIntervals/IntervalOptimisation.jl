@@ -2,9 +2,11 @@
 """
     minimise(f, X, tol=1e-3)
 
-Find the global minimum of the function `f` over the `Interval` or `IntervalBox` `X`.
+Find the global minimum of the function `f` over the `Interval` or `IntervalBox` `X` using the Moore-Skelboe algorithm.
 
-Uses a version of the Moore-Skelboe algorithm.
+For higher-dimensional functions ``f:\mathbb{R}^n \to \mathbb{R}``, `f` must take a single vector argument.
+
+Returns an interval containing the global minimum, and a list of boxes that contain the minimisers.
 """
 function minimise{T}(f, X::T, tol=1e-3)
 
@@ -13,7 +15,6 @@ function minimise{T}(f, X::T, tol=1e-3)
 
     minimizers = T[]
     global_min = ∞  # upper bound
-    lower_bound = -∞
 
     num_bisections = 0
 
@@ -41,10 +42,6 @@ function minimise{T}(f, X::T, tol=1e-3)
         if diam(X) < tol
             push!(minimizers, X)
 
-            if X_min > lower_bound
-                lower_bound = X_min
-            end
-    
         else
             X1, X2 = bisect(X)
             push!( working, (X1, inf(f(X1))), (X2, inf(f(X2))) )
@@ -52,6 +49,8 @@ function minimise{T}(f, X::T, tol=1e-3)
         end
 
     end
+
+    lower_bound = minimum(inf.(f.(minimizers)))
 
     return Interval(lower_bound, global_min), minimizers
 end
