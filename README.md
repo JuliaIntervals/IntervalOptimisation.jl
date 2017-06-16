@@ -85,4 +85,4 @@ Departamento de Física, Facultad de Ciencias, Universidad Nacional Autónoma de
 
 
 ## Acknowledements
-Financial support is acknowledged from DGAPA-UNAM PAPIME grants PE-105911 and PE-107114, and DGAPA-UNAM PAPIIT grant IN-117214, and from a CONACYT-Mexico sabbatical fellowship. The author thanks Alan Edelman and the Julia group for hospitality during his sabbatical visit. He also thanks Luc Jaulin and Jordan Ninin for the [IAMOOC](http://iamooc.ensta-bretagne.fr/) online course, which introduced him to this subject.
+Financial support is acknowledged from DGAPA-UNAM PAPIIT grant IN-117117.
