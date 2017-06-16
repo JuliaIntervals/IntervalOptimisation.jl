@@ -1,7 +1,7 @@
 module SortedVectors
 
-import Base: getindex, length, insert!, push!, isempty,
-        pop!, shift!, deleteat!, resize!
+import Base: getindex, length, push!, isempty,
+        pop!, shift!, resize!
 
 export SortedVector
 
@@ -30,12 +30,6 @@ end
 getindex(v::SortedVector, i::Int) = v.data[i]
 length(v::SortedVector) = length(v.data)
 
-
-function insert!{T}(v::SortedVector{T}, i::Int, x::T)
-    push!(v.data, i, x)
-    return v
-end
-
 function push!{T}(v::SortedVector{T}, x::T)
     i = searchsortedfirst(v.data, x, by=v.by)
     insert!(v.data, i, x)
@@ -48,10 +42,6 @@ pop!(v::SortedVector) = pop!(v.data)
 
 shift!(v::SortedVector) = shift!(v.data)
 
-function deleteat!(v::SortedVector, i::Int)
-    deleteat!(v.data, i)
-    return v
-end
 
 function resize!(v::SortedVector, n::Int)
     resize!(v.data, n)

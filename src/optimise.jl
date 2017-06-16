@@ -1,37 +1,32 @@
 
 """
-    optimise(f, X, tol=1e-3)
+    minimise(f, X, tol=1e-3)
 
 Find the global minimum of the function `f` over the `Interval` or `IntervalBox` `X`.
 
 Uses a version of the Moore-Skelboe algorithm.
 """
-function optimise{T}(f, X::T, tol=1e-3)
+function minimise{T}(f, X::T, tol=1e-3)
 
     # list of boxes with corresponding lower bound, ordered by increasing lower bound:
     working = SortedVector([(X, ∞)], x->x[2])
 
-    global_min = ∞
-    minimizers = Tuple{T, Float64}[]
+    minimizers = T[]
+    global_min = ∞  # upper bound
+    lower_bound = -∞
 
     num_bisections = 0
 
     while !isempty(working)
 
-        # @show working
+        (X, X_min) = shift!(working)
 
-        (X, Xmin) = shift!(working)
-        # Y = f(X)
-
-        if inf(f(X)) > global_min  # inf(f(X)) is Xmin?
+        if X_min > global_min    # X_min == inf(f(X))
             continue
         end
 
-        # find candidate for global minimum upper bound:
+        # find candidate for upper bound of global minimum by just evaluating a point in the interval:
         m = sup(f(Interval.(mid.(X))))   # evaluate at midpoint of current interval
-
-        # @show m, global_min
-        # @show length(working.data)
 
         if m < global_min
             global_min = m
@@ -44,8 +39,12 @@ function optimise{T}(f, X::T, tol=1e-3)
         resize!(working, cutoff-1)
 
         if diam(X) < tol
-            push!( minimizers, (X, inf(f(X))) )
+            push!(minimizers, X)
 
+            if X_min > lower_bound
+                lower_bound = X_min
+            end
+    
         else
             X1, X2 = bisect(X)
             push!( working, (X1, inf(f(X1))), (X2, inf(f(X2))) )
@@ -54,7 +53,5 @@ function optimise{T}(f, X::T, tol=1e-3)
 
     end
 
-    @show num_bisections
-
-    return global_min, minimizers
+    return Interval(lower_bound, global_min), minimizers
 end
