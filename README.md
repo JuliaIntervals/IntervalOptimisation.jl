@@ -52,6 +52,7 @@ julia> minimisers
 
 #### 2D
 
+```
 julia> @time global_min, minimisers = minimise(  X -> ( (x,y) = X; x^2 + y^2 ),
                                                         (-10000..10001) × (-10000..10001) );
   0.051122 seconds (46.80 k allocations: 2.027 MiB)
@@ -64,8 +65,9 @@ julia> minimisers
  [-0.000107974, 0.000488103] × [-0.000107974, 0.000488103]
  [-0.000107974, 0.000488103] × [-0.000704051, -0.000107973]
  [-0.000704051, -0.000107973] × [-0.000107974, 0.000488103]
-
+```
 Note that here, the last two `IntervalBox`es do not actually contain the global minimum.
+
 
 ## Author
 
