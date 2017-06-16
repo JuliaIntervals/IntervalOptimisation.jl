@@ -66,8 +66,18 @@ julia> minimisers
  [-0.000107974, 0.000488103] × [-0.000704051, -0.000107973]
  [-0.000704051, -0.000107973] × [-0.000107974, 0.000488103]
 ```
-Note that here, the last two `IntervalBox`es do not actually contain the global minimum.
+Note that the last two `IntervalBox`es do not actually contain the global minimum;
+decreasing the tolerance (maximum allowed box diameter) removes them:
 
+```
+julia> @time global_min, minimisers = minimise(  X -> ( (x,y) = X; x^2 + y^2 ),
+                                                               (-10000..10001) × (-10000..10001), 1e-5 );
+  0.047196 seconds (50.72 k allocations: 2.180 MiB)
+
+julia> minimisers
+1-element Array{IntervalArithmetic.IntervalBox{2,Float64},1}:
+ [-5.52321e-06, 3.79049e-06] × [-5.52321e-06, 3.79049e-06]
+ ```
 
 ## Author
 
