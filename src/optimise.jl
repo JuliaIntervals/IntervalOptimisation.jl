@@ -54,3 +54,9 @@ function minimise{T}(f, X::T, tol=1e-3)
 
     return Interval(lower_bound, global_min), minimizers
 end
+
+
+function maximise{T}(f, X::T, tol=1e-3)
+    bound, minimizers = minimise(x -> -f(x), X, tol)
+    return -bound, minimizers
+end
