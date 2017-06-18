@@ -93,6 +93,7 @@ Departamento de Física, Facultad de Ciencias, Universidad Nacional Autónoma de
 
 - van Emden M.H., Moa B. (2004). Termination Criteria in the Moore-Skelboe Algorithm for Global Optimization by Interval Arithmetic. In: Floudas C.A., Pardalos P. (eds), *Frontiers in Global Optimization. Nonconvex Optimization and Its Applications*, vol. 74. Springer, Boston, MA. [Preprint](http://webhome.cs.uvic.ca/~vanemden/Publications/mooreSkelb.pdf)
 
+- H. Ratschek and J. Rokne, [*New Computer Methods for Global Optimization*](http://pages.cpsc.ucalgary.ca/~rokne/global_book.pdf)
 
 ## Acknowledements
 Financial support is acknowledged from DGAPA-UNAM PAPIIT grant IN-117117.
