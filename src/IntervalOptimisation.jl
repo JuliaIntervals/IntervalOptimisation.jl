@@ -20,4 +20,7 @@ end
 
 include("optimise.jl")
 
+const minimize = minimise
+const maximize = maximise 
+
 end
