@@ -2,7 +2,8 @@
 
 module IntervalOptimisation
 
-export minimise, maximise
+export minimise, maximise,
+       minimize, maximize
 
 include("SortedVectors.jl")
 using .SortedVectors
