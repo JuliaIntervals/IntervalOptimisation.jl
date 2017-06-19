@@ -21,7 +21,7 @@
 
 ## Rigorous global optimisation using Julia
 
-This package provides rigorous global optimisation routines written in pure Julia, using interval arithmetic provided by the author's [IntervalArithmetic.jl](https://github.com/JuliaIntervals/IntervalArithmetic.jl]) package.
+This package provides rigorous global optimisation routines written in pure Julia, using interval arithmetic provided by the author's [IntervalArithmetic.jl](https://github.com/JuliaIntervals/IntervalArithmetic.jl) package.
 
 Currently, the package uses an implementation of the Moore-Skelboe algorithm.
 
