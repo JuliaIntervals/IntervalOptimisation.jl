@@ -60,3 +60,22 @@ function maximise{T}(f, X::T, tol=1e-3)
     bound, minimizers = minimise(x -> -f(x), X, tol)
     return -bound, minimizers
 end
+
+
+
+function unify(minimisers)
+
+    n = length(minimisers)
+    g = Graph(length(minimisers))
+
+    for i in 1:n, j in i+1:n
+        if !isempty(minimisers[i] ∩ minimisers[j])
+            add_edge!(g, i, j)
+        end
+    end
+
+    components = LightGraphs.connected_components(g)
+
+    return [reduce(union, minimisers[components[i]]) for i in 1:length(components)]
+
+end
