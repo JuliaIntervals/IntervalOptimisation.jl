@@ -14,6 +14,7 @@ Documenter.makedocs(
 
 
 Documenter.deploydocs(
+    julia = "nightly",
     repo = "github.com/dpsanders/IntervalOptimisation.jl.git",
     target = "build",
     deps = nothing,
