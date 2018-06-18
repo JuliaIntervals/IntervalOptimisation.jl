@@ -12,7 +12,7 @@ immutable SortedVector{T, F<:Function}
     data::Vector{T}
     by::F
 
-    function SortedVector(data::Vector{T}, by::F)
+    function SortedVector{T,F}(data::Vector{T}, by::F) where {T,F}
         new(sort(data), by)
     end
 end
