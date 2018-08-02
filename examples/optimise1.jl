@@ -2,6 +2,7 @@ using IntervalOptimisation, IntervalArithmetic, IntervalConstraintProgramming
 
 
 # Unconstrained Optimisation
+# Example from Eldon Hansen - Global Optimisation using Interval Analysis, Chapter 11
 f(x, y) = (1.5 - x * (1 - y))^2 + (2.25 - x * (1 - y^2))^2 + (2.625 - x * (1 - y^3))^2
 # f (generic function with 2 methods)
 
@@ -29,6 +30,7 @@ minimise_icp(f, X)
 
 
 # Constrained Optimisation
+# Example 1 from http://archimedes.cheme.cmu.edu/?q=baronexamples
 f(X) = -1 * (X[1] + X[2])
 # f (generic function with 1 method)
 

@@ -1,90 +1,48 @@
-using IntervalRootFinding, IntervalArithmetic, StaticArrays, ForwardDiff, BenchmarkTools, Compat, IntervalOptimisation, DataStructures, IntervalConstraintProgramming
-
-import Base.isless
-
-struct IntervalMinima{T<:Real}
-    intval::Interval{T}
-    global_minimum::T
+struct IntervalMinimum{T<:Real}
+    interval::Interval{T}
+    minimum::T
 end
 
-function isless(a::IntervalMinima{T}, b::IntervalMinima{T}) where {T<:Real}
-    return isless(a.global_minimum, b.global_minimum)
-end
+Base.isless(a::IntervalMinimum{T}, b::IntervalMinimum{T}) where {T<:Real} = isless(a.minimum, b.minimum)
 
-function minimise1d(f::Function, x::Interval{T}; reltol=1e-3, abstol=1e-3) where {T<:Real}
+function minimise1d(f::Function, x::Interval{T}; reltol=1e-3, abstol=1e-3, use_deriv=false, use_second_deriv=false) where {T<:Real}
 
-    Q = binary_minheap(IntervalMinima{T})
+    Q = binary_minheap(IntervalMinimum{T})
 
     global_minimum = f(interval(mid(x))).hi
 
     arg_minima = Interval{T}[]
 
-    push!(Q, IntervalMinima(x, global_minimum))
+    push!(Q, IntervalMinimum(x, global_minimum))
 
     while !isempty(Q)
 
         p = pop!(Q)
 
-        if isempty(p.intval)
+        if isempty(p.interval)
             continue
         end
 
-        if p.global_minimum > global_minimum
+        if p.minimum > global_minimum
             continue
         end
 
-        current_minimum = f(interval(mid(p.intval))).hi
-
-        if current_minimum < global_minimum
-            global_minimum = current_minimum
+        if use_deriv
+            deriv = ForwardDiff.derivative(f, p.interval)
+            if 0 ∉ deriv
+                continue
+            end
         end
 
-        if diam(p.intval) < abstol
-            push!(arg_minima, p.intval)
-        else
-            x1, x2 = bisect(p.intval)
-            push!(Q, IntervalMinima(x1, f(x1).lo), IntervalMinima(x2, f(x2).lo))
-        end
-    end
-    lb = minimum(inf.(f.(arg_minima)))
-
-    return lb..global_minimum, arg_minima
-end
-
-function minimise1d_deriv(f::Function, x::Interval{T}; reltol=1e-3, abstol=1e-3) where {T<:Real}
-
-    Q = binary_minheap(IntervalMinima{T})
-
-    global_minimum = f(interval(mid(x))).hi
-
-    arg_minima = Interval{T}[]
-
-    push!(Q, IntervalMinima(x, global_minimum))
-
-    while !isempty(Q)
-
-        p = pop!(Q)
-
-        if isempty(p.intval)
-            continue
-        end
-
-        if p.global_minimum > global_minimum
-            continue
-        end
-
-        deriv = ForwardDiff.derivative(f, p.intval)
-        if 0 ∉ deriv
-            continue
-        end
         # Second derivative contractor
-        # doublederiv = ForwardDiff.derivative(x->ForwardDiff.derivative(f, x), p.intval)
-        # if doublederiv < 0
-        #     continue
-        # end
+        if use_second_deriv
+            doublederiv = ForwardDiff.derivative(x->ForwardDiff.derivative(f, x), p.interval)
+            if doublederiv < 0
+                continue
+            end
+        end
 
-        m = mid(p.intval)
-
+        m = mid(p.interval)
         current_minimum = f(interval(m)).hi
 
         if current_minimum < global_minimum
@@ -93,33 +51,24 @@ function minimise1d_deriv(f::Function, x::Interval{T}; reltol=1e-3, abstol=1e-3)
 
 
         # Contractor 1
-        x = m .+ extended_div((interval(-∞, global_minimum) - f(m)), deriv)
+        if use_deriv
+            x = m .+ extended_div((interval(-∞, global_minimum) - f(m)), deriv)
 
-        x = x .∩ p.intval
+            x = x .∩ p.interval
+        end
 
-        # # Contractor 2 (Second derivative, expanding more on the Taylor Series, not beneficial in practice)
-        # x = m .+ quadratic_roots(doublederiv/2, ForwardDiff.derivative(f, interval(m)), f(m) - interval(-∞, global_minimum))
-        #
-        # x = x .∩ p.intval
-
-        if diam(p.intval) < abstol
-            push!(arg_minima, p.intval)
+        if diam(p.interval) < abstol
+            push!(arg_minima, p.interval)
         else
-            if isempty(x[2])
+
+            if use_deriv && isempty(x[2])
                 x1, x2 = bisect(x[1])
-                push!(Q, IntervalMinima(x1, f(x1).lo), IntervalMinima(x2, f(x2).lo))
-            else
-                push!(Q, IntervalMinima.(x, inf.(f.(x)))...)
+                push!(Q, IntervalMinimum(x1, f(x1).lo), IntervalMinimum(x2, f(x2).lo))
+                continue
             end
 
-            # Second Deriv contractor
-            # if isempty(x[2])
-            #     x1, x2 = bisect(x[1])
-            #     push!(Q, IntervalMinima(x1, f(x1).lo), IntervalMinima(x2, f(x2).lo))
-            # else
-            #     x1, x2, x3 = x
-            #     push!(Q, IntervalMinima(x1, f(x1).lo), IntervalMinima(x2, f(x2).lo), IntervalMinima(x3, f(x3).lo))
-            # end
+            x1, x2 = bisect(p.interval)
+            push!(Q, IntervalMinimum(x1, f(x1).lo), IntervalMinimum(x2, f(x2).lo))
         end
     end
     lb = minimum(inf.(f.(arg_minima)))
@@ -128,25 +77,27 @@ function minimise1d_deriv(f::Function, x::Interval{T}; reltol=1e-3, abstol=1e-3)
 end
 
 
-
-
-struct IntervalBoxMinima{N, T<:Real}
-    intval::IntervalBox{N, T}
-    global_minimum::T
+struct IntervalBoxMinimum{N, T<:Real}
+    interval::IntervalBox{N, T}
+    minimum::T
 end
 
-struct constraint{T<:Real}
-    f::Function
+"""
+Datatype to provide constraints to Global Optimisation such as:
+```
+Constraint(x->(x^2 - 10), -∞..1)
+```
+"""
+struct Constraint{F, T<:Real}
+    f::F
     c::Interval{T}
 end
 
-function isless(a::IntervalBoxMinima{N, T}, b::IntervalBoxMinima{N, T}) where {N, T<:Real}
-    return isless(a.global_minimum, b.global_minimum)
-end
+Base.isless(a::IntervalBoxMinimum{N, T}, b::IntervalBoxMinimum{N, T}) where {N, T<:Real} = isless(a.minimum, b.minimum)
 
 function minimise_icp(f::Function, x::IntervalBox{N, T}; reltol=1e-3, abstol=1e-3) where {N, T<:Real}
 
-    Q = binary_minheap(IntervalBoxMinima{N, T})
+    Q = binary_minheap(IntervalBoxMinimum{N, T})
 
     global_minimum = ∞
 
@@ -154,37 +105,34 @@ function minimise_icp(f::Function, x::IntervalBox{N, T}; reltol=1e-3, abstol=1e-
 
     arg_minima = IntervalBox{N, T}[]
 
-    push!(Q, IntervalBoxMinima(x, global_minimum))
+    push!(Q, IntervalBoxMinimum(x, global_minimum))
 
     while !isempty(Q)
 
         p = pop!(Q)
 
-        if isempty(p.intval)
+        if isempty(p.interval)
             continue
         end
 
-        if p.global_minimum > global_minimum
+        if p.minimum > global_minimum
             continue
         end
 
-        current_minimum = f(interval.(mid(p.intval))).hi
+        current_minimum = f(interval.(mid(p.interval))).hi
 
         if current_minimum < global_minimum
             global_minimum = current_minimum
         end
-        # if all(0 .∉ ForwardDiff.gradient(f, p.intval.v))
-        #     continue
-        # end
 
-        X = icp(f, p.intval, -∞..global_minimum)
+        X = icp(f, p.interval, -∞..global_minimum)
 
-        if diam(p.intval) < abstol
-            push!(arg_minima, p.intval)
+        if diam(p.interval) < abstol
+            push!(arg_minima, p.interval)
 
         else
             x1, x2 = bisect(X)
-            push!(Q, IntervalBoxMinima(x1, f(x1).lo), IntervalBoxMinima(x2, f(x2).lo))
+            push!(Q, IntervalBoxMinimum(x1, f(x1).lo), IntervalBoxMinimum(x2, f(x2).lo))
         end
     end
 
@@ -193,9 +141,9 @@ function minimise_icp(f::Function, x::IntervalBox{N, T}; reltol=1e-3, abstol=1e-
     return lb..global_minimum, arg_minima
 end
 
-function minimise_icp_constrained(f::Function, x::IntervalBox{N, T}, constraints::Vector{constraint{T}} = Vector{constraint{T}}(); reltol=1e-3, abstol=1e-3) where {N, T<:Real}
+function minimise_icp_constrained(f::Function, x::IntervalBox{N, T}, constraints::Vector{Constraint{T}} = Vector{Constraint{T}}(); reltol=1e-3, abstol=1e-3) where {N, T<:Real}
 
-    Q = binary_minheap(IntervalBoxMinima{N, T})
+    Q = binary_minheap(IntervalBoxMinimum{N, T})
 
     global_minimum = ∞
 
@@ -207,40 +155,38 @@ function minimise_icp_constrained(f::Function, x::IntervalBox{N, T}, constraints
 
     arg_minima = IntervalBox{N, T}[]
 
-    push!(Q, IntervalBoxMinima(x, global_minimum))
+    push!(Q, IntervalBoxMinimum(x, global_minimum))
 
     while !isempty(Q)
 
         p = pop!(Q)
 
-        if isempty(p.intval)
+        if isempty(p.interval)
             continue
         end
 
-        if p.global_minimum > global_minimum
+        if p.minimum > global_minimum
             continue
         end
 
-        # current_minimum = f(interval.(mid(p.intval))).hi
-        current_minimum = f(p.intval).hi
+        # current_minimum = f(interval.(mid(p.interval))).hi
+        current_minimum = f(p.interval).hi
 
         if current_minimum < global_minimum
             global_minimum = current_minimum
         end
-        # if 0 .∉ ForwardDiff.gradient(f, p.intval.v)
-        #     continue
-        # end
-        X = icp(f, p.intval, -∞..global_minimum)
+
+        X = icp(f, p.interval, -∞..global_minimum)
 
         for t in constraints
             X = icp(t.f, X, t.c)
         end
 
-        if diam(p.intval) < abstol
-            push!(arg_minima, p.intval)
+        if diam(p.interval) < abstol
+            push!(arg_minima, p.interval)
         else
             x1, x2 = bisect(X)
-            push!(Q, IntervalBoxMinima(x1, f(x1).lo), IntervalBoxMinima(x2, f(x2).lo))
+            push!(Q, IntervalBoxMinimum(x1, f(x1).lo), IntervalBoxMinimum(x2, f(x2).lo))
         end
     end
     lb = minimum(inf.(f.(arg_minima)))
