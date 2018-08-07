@@ -88,8 +88,8 @@ Datatype to provide constraints to Global Optimisation such as:
 Constraint(x->(x^2 - 10), -∞..1)
 ```
 """
-struct Constraint{F, T<:Real}
-    f::F
+struct Constraint{T<:Real}
+    f::Function
     c::Interval{T}
 end
 
