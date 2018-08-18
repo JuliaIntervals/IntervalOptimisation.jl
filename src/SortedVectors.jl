@@ -1,3 +1,5 @@
+__precompile__()
+
 module SortedVectors
 
 import Base: getindex, length, push!, isempty,
@@ -12,7 +14,7 @@ immutable SortedVector{T, F<:Function}
     data::Vector{T}
     by::F
 
-    function SortedVector{T,F}9(data::Vector{T}, by::F) where {T,F}
+    function SortedVector{T,F}(data::Vector{T}, by::F) where {T,F}
         new{T,F}(sort(data), by)
     end
 end
