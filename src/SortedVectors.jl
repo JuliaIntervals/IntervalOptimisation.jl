@@ -1,3 +1,5 @@
+__precompile__()
+
 module SortedVectors
 
 import Base: getindex, length, push!, isempty,
@@ -12,14 +14,14 @@ immutable SortedVector{T, F<:Function}
     data::Vector{T}
     by::F
 
-    function SortedVector(data::Vector{T}, by::F)
-        new(sort(data), by)
+    function SortedVector{T,F}(data::Vector{T}, by::F) where {T,F}
+        new{T,F}(sort(data), by)
     end
 end
 
 
-SortedVector{T,F}(data::Vector{T}, by::F) = SortedVector{T,F}(data, by)
-SortedVector{T}(data::Vector{T}) = SortedVector{T,typeof(identity)}(data, identity)
+SortedVector(data::Vector{T}, by::F) where {T,F} = SortedVector{T,F}(data, by)
+SortedVector(data::Vector{T}) where {T} = SortedVector{T,typeof(identity)}(data, identity)
 
 function show(io::IO, v::SortedVector)
     print(io, "SortedVector($(v.data))")
@@ -30,7 +32,7 @@ end
 getindex(v::SortedVector, i::Int) = v.data[i]
 length(v::SortedVector) = length(v.data)
 
-function push!{T}(v::SortedVector{T}, x::T)
+function push!(v::SortedVector{T}, x::T) where {T}
     i = searchsortedfirst(v.data, x, by=v.by)
     insert!(v.data, i, x)
     return v
