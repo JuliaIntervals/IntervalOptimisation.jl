@@ -8,7 +8,7 @@ For higher-dimensional functions ``f:\mathbb{R}^n \to \mathbb{R}``, `f` must tak
 
 Returns an interval containing the global minimum, and a list of boxes that contain the minimisers.
 """
-function minimise{T}(f, X::T, tol=1e-3)
+function minimise(f, X::T, tol=1e-3) where T
 
     # list of boxes with corresponding lower bound, ordered by increasing lower bound:
     working = SortedVector([(X, ∞)], x->x[2])
@@ -56,7 +56,7 @@ function minimise{T}(f, X::T, tol=1e-3)
 end
 
 
-function maximise{T}(f, X::T, tol=1e-3)
+function maximise(f, X::T, tol=1e-3) where T
     bound, minimizers = minimise(x -> -f(x), X, tol)
     return -bound, minimizers
 end

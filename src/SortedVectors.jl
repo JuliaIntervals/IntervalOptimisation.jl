@@ -10,7 +10,7 @@ export SortedVector
 """
 A `SortedVector` behaves like a standard Julia `Vector`, except that its elements are stored in sorted order, with an optional function `by` that determines the sorting order in the same way as `Base.searchsorted`.
 """
-immutable SortedVector{T, F<:Function}
+struct SortedVector{T, F<:Function}
     data::Vector{T}
     by::F
 
