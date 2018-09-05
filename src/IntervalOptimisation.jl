@@ -10,15 +10,8 @@ export minimise, maximise,
 include("SortedVectors.jl")
 using .SortedVectors
 
-using IntervalArithmetic, IntervalRootFinding, DataStructures, IntervalConstraintProgramming, StaticArrays, ForwardDiff
+using IntervalArithmetic, IntervalRootFinding, DataStructures, IntervalConstraintProgramming, ForwardDiff
 
-if !isdefined(:sup)
-    const sup = supremum
-end
-
-if !isdefined(:inf)
-    const inf = infimum
-end
 
 include("optimise.jl")
 include("optimise1.jl")
