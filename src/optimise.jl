@@ -20,7 +20,7 @@ function minimise(f, X::T, tol=1e-3) where {T}
 
     while !isempty(working)
 
-        (X, X_min) = shift!(working)
+        (X, X_min) = popfirst!(working)
 
         if X_min > global_min    # X_min == inf(f(X))
             continue
