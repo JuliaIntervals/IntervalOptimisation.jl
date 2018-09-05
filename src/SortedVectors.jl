@@ -10,17 +10,16 @@ export SortedVector
 """
 A `SortedVector` behaves like a standard Julia `Vector`, except that its elements are stored in sorted order, with an optional function `by` that determines the sorting order in the same way as `Base.searchsorted`.
 """
-immutable SortedVector{T, F<:Function}
+struct SortedVector{T, F<:Function}
     data::Vector{T}
     by::F
 
-    function SortedVector{T,F}(data::Vector{T}, by::F) where {T,F}
+    function SortedVector(data::Vector{T}, by::F) where {T,F}
         new{T,F}(sort(data), by)
     end
 end
 
 
-SortedVector(data::Vector{T}, by::F) where {T,F} = SortedVector{T,F}(data, by)
 SortedVector(data::Vector{T}) where {T} = SortedVector{T,typeof(identity)}(data, identity)
 
 function show(io::IO, v::SortedVector)
