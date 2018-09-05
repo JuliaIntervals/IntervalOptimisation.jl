@@ -3,7 +3,7 @@ __precompile__()
 module SortedVectors
 
 import Base: getindex, length, push!, isempty,
-        pop!, shift!, resize!
+        pop!, resize!, popfirst!
 
 export SortedVector
 
@@ -41,7 +41,7 @@ isempty(v::SortedVector) = isempty(v.data)
 
 pop!(v::SortedVector) = pop!(v.data)
 
-shift!(v::SortedVector) = shift!(v.data)
+popfirst!(v::SortedVector) = popfirst!(v.data)
 
 
 function resize!(v::SortedVector, n::Int)
