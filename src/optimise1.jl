@@ -119,7 +119,7 @@ function minimise_icp(f::Function, x::IntervalBox{N, T}; reltol=1e-3, abstol=1e-
             continue
         end
 
-        current_minimum = f(interval.(mid(p.interval))).hi
+        current_minimum = sup(f(interval.(mid(p.interval))))
 
         if current_minimum < global_minimum
             global_minimum = current_minimum
@@ -135,6 +135,8 @@ function minimise_icp(f::Function, x::IntervalBox{N, T}; reltol=1e-3, abstol=1e-
             push!(Q, IntervalBoxMinimum(x1, f(x1).lo), IntervalBoxMinimum(x2, f(x2).lo))
         end
     end
+
+    #@show arg_minima
 
     lb = minimum(inf.(f.(arg_minima)))
 

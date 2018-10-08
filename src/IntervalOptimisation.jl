@@ -2,13 +2,15 @@
 
 module IntervalOptimisation
 
+using DataStructures
+
 export minimise, maximise,
        minimize, maximize,
        minimise1d, minimise1d_deriv,
        minimise_icp, minimise_icp_constrained
 
-include("SortedVectors.jl")
-using .SortedVectors
+# include("SortedVectors.jl")
+# using .SortedVectors
 
 using IntervalArithmetic, IntervalRootFinding, DataStructures, IntervalConstraintProgramming, ForwardDiff
 
