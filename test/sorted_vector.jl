@@ -1,4 +1,5 @@
 using IntervalOptimisation
+using Test
 
 const SortedVector = IntervalOptimisation.SortedVector
 
