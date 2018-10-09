@@ -1,5 +1,5 @@
 using IntervalOptimisation
-using sTest
+using Test
 
 include("sorted_vector.jl")
 include("optimise.jl")
