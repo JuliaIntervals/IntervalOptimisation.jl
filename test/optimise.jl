@@ -1,5 +1,5 @@
 using IntervalArithmetic, IntervalOptimisation
-using Base.Test
+using Test
 
 @testset "IntervalOptimisation tests" begin
 
