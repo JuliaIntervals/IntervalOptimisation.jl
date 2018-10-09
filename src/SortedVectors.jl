@@ -20,7 +20,7 @@ struct SortedVector{T, F<:Function}
 end
 
 
-SortedVector(data::Vector{T}) where {T} = SortedVector{T,typeof(identity)}(data, identity)
+SortedVector(data::Vector{T}) where {T} = SortedVector(data, identity)
 
 function show(io::IO, v::SortedVector)
     print(io, "SortedVector($(v.data))")

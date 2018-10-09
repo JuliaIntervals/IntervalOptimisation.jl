@@ -9,8 +9,8 @@ using Test
         @test length(minimisers) == 1
         @test minimisers[1] ⊆ -10 .. -9.999
 
-        global_min, minimisers = minimise(x->x^2, -10..11)
-        @test global_min ⊆ 0..1e-7
+        global_min, minimisers = minimise(x->x^2, -10..11, 1e-10)
+        @test global_min ⊆ 0..1e-20
         @test length(minimisers) == 1
         @test minimisers[1] ⊆ -0.1..0.1
 
