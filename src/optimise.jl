@@ -47,7 +47,7 @@ function _minimise(f, working::PriorityQueue{K,V}, tol) where {K,V}
 
         m = sup(f(interval.(mid(XX))))   # evaluate at midpoint of current interval
 
-        if m < global_min
+        if m < global_min && m > -∞
             global_min = m
         end
 
@@ -62,8 +62,13 @@ function _minimise(f, working::PriorityQueue{K,V}, tol) where {K,V}
 
         else
             X1, X2 = bisect(XX)
-            enqueue!(working, X1 => inf(f(X1)) )
-            enqueue!(working, X2 => inf(f(X2)) )
+
+            inf1 = inf(f(X1))
+            inf1 <= global_min && enqueue!(working, X1 => inf1 )
+
+            inf2 = inf(f(X2))
+            inf2 <= global_min && enqueue!(working, X2 => inf2 )
+
             num_bisections += 1
         end
 
@@ -72,11 +77,11 @@ function _minimise(f, working::PriorityQueue{K,V}, tol) where {K,V}
     # @show global_min
     # @show minimizers
 
-    new_minimizers = [minimizer for minimizer in minimizers if !(f(minimizer).lo > global_min)]
+    new_minimizers = [minimizer for minimizer in minimizers if f(minimizer).lo <= global_min]
 
     lower_bound = minimum(inf.(f.(new_minimizers)))
 
-    return Interval(lower_bound, global_min), minimizers
+    return Interval(lower_bound, global_min), new_minimizers
 end
 
 
