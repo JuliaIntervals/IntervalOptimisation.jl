@@ -15,7 +15,7 @@ struct SortedVector{T, F<:Function}
     by::F
 
     function SortedVector(data::Vector{T}, by::F) where {T,F}
-        new{T,F}(sort(data), by)
+        new{T,F}(sort(data,by=by), by)
     end
 end
 
