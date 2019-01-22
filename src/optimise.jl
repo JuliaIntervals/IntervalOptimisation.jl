@@ -1,4 +1,4 @@
-
+﻿
 """
     minimise(f, X, tol=1e-3)
 
@@ -11,8 +11,7 @@ Returns an interval containing the global minimum, and a list of boxes that cont
 function minimise(f, X::T, tol=1e-3) where {T}
 
     # list of boxes with corresponding lower bound, ordered by increasing lower bound:
-    working = SortedVector([(X, ∞)], x->x[2])
-
+    working = heap([(X, ∞)], x->x[2])
     minimizers = T[]
     global_min = ∞  # upper bound
 
@@ -36,15 +35,13 @@ function minimise(f, X::T, tol=1e-3) where {T}
         # Remove all boxes whose lower bound is greater than the current one:
         # Since they are ordered, just find the first one that is too big
 
-        cutoff = searchsortedfirst(working.data, (X, global_min), by=x->x[2])
-        resize!(working, cutoff-1)
-
+        resize!(working, (X, global_min) )
         if diam(X) < tol
             push!(minimizers, X)
-
         else
             X1, X2 = bisect(X)
-            push!( working, (X1, inf(f(X1))), (X2, inf(f(X2))) )
+            push!( working, (X1, inf(f(X1))) )
+            push!( working, (X2, inf(f(X2))) )
             num_bisections += 1
         end
 

@@ -5,8 +5,9 @@ module IntervalOptimisation
 export minimise, maximise,
        minimize, maximize
 
-include("SortedVectors.jl")
-using .SortedVectors
+
+include("HeapedVectors.jl")
+using .HeapedVectors
 
 using IntervalArithmetic, IntervalRootFinding
 
