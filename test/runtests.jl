@@ -1,5 +1,5 @@
 using IntervalOptimisation
 using Test
 
-include("sorted_vector.jl")
+include("heaped_vectors.jl")
 include("optimise.jl")
