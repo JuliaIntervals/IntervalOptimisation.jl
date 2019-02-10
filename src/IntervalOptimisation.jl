@@ -1,7 +1,7 @@
 module IntervalOptimisation
 
 using IntervalArithmetic, IntervalRootFinding
-
+using LinearAlgebra
 
 export minimise, maximise,
        minimize, maximize

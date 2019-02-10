@@ -1,6 +1,9 @@
 ﻿numeric_type(::Interval{T}) where {T} = T
 numeric_type(::IntervalBox{N, T}) where {N, T} = T
 
+interval_mid(X::Interval) = Interval(mid(X))
+interval_mid(X::IntervalBox) = IntervalBox(mid(X))
+
 """
     minimise(f, X, structure = SortedVector, tol=1e-3)
     or
@@ -37,7 +40,7 @@ function minimise(f, X::T; structure = HeapedVector, tol=1e-3) where {T}
         end
 
         # find candidate for upper bound of global minimum by just evaluating a point in the interval:
-        m = sup(f(Interval.(mid.(X))))   # evaluate at midpoint of current interval
+        m = sup(f(interval_mid(X)))   # evaluate at midpoint of current interval
 
         if m < global_min
             global_min = m
