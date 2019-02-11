@@ -25,7 +25,7 @@ Calculate a third-order Taylor form of ``f:\\mathbb{R}^n \\to \\mathbb{R}`` usin
 function third_order_taylor_form_scalar(f, X)
     m = IntervalBox(mid(X))
 
-    H = ForwardDiff.hessian(f, X)
+    H = hessian(f, X)
     δ = X - m
 
     return f(m) + gradient(f, m) ⋅ δ + 0.5 * sum(δ[i]*H[i,j]*δ[j] for i in 1:length(X) for j in 1:length(X))
