@@ -7,14 +7,14 @@ import Base: getindex, length, push!, isempty,
 
 export SortedVector
 
-struct SortedVector{T, F<:Function} 
+struct SortedVector{T, F<:Function}
     data::Vector{T}
     by::F
 
     function SortedVector(data::Vector{T}, by::F) where {T,F}
         new{T,F}(sort(data, by = by), by)
     end
-end  
+end
 
 SortedVector(data::Vector{T}) where {T} = SortedVector(data, identity)
 
@@ -39,7 +39,10 @@ pop!(v::SortedVector) = pop!(v.data)
 
 popfirst!(v::SortedVector) = popfirst!(v.data)
 
-function filter!(v::SortedVector{T}, x::T) where {T}  
+include("Strategy.jl")
+import Strategy:filter_elements!
+
+function filter_elements!(v::SortedVector{T}, x::T) where {T}
     cutoff = searchsortedfirst(v.data, x, by=v.by)
     resize!(v.data, cutoff-1)
     return v

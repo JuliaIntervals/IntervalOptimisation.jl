@@ -7,30 +7,30 @@ import Base: getindex, length, push!, isempty,
 
 export HeapedVector
 
-struct HeapedVector{T, F<:Function}  
+struct HeapedVector{T, F<:Function}
     data::Vector{T}
     by::F
     function HeapedVector(v::Vector{T}, by::F) where {T, F}
         new{T, F}(heaping(v, by), by)
     end
 end
-      
-HeapedVector(data::Vector{T}) where {T} = HeapedVector(data, identity)  
 
-       
-function heaping(v, by)  
+HeapedVector(data::Vector{T}) where {T} = HeapedVector(data, identity)
+
+
+function heaping(v, by)
     ar = typeof(v[1])[]
-    for i = 1:length(v) 
+    for i = 1:length(v)
         insert!(ar, i, v[i])
         floatup!(ar, length(ar), by)
     end
     return ar
 end
 
-function floatup!(ar, index, by)	
+function floatup!(ar, index, by)
     par = convert(Int, floor(index/2))
     if index <= 1
-        return ar 
+        return ar
     end
     if by(ar[index]) < by(ar[par])
        ar[par], ar[index] = ar[index], ar[par]
@@ -51,19 +51,19 @@ isempty(v::HeapedVector) = isempty(v.data)
 
 function popfirst!(v::HeapedVector{T}) where {T}
     if length(v.data) == 0
-         return 
+         return
     end
-	
+
     if length(v.data) > 2
         v.data[length(v.data)], v.data[1] = v.data[1], v.data[length(v.data)]
     	minm = pop!(v.data)
     	bubbledown!(v::HeapedVector{T}, 1)
-    
+
     elseif length(v.data) == 2
         v.data[length(v.data)], v.data[1] = v.data[1], v.data[length(v.data)]
     	minm = pop!(v.data)
     else
-    	minm = pop!(v.data)	
+    	minm = pop!(v.data)
     end
     return minm
 end
@@ -88,8 +88,10 @@ function bubbledown!(v::HeapedVector{T}, index) where{T}
     end
 end
 
+include("Strategy.jl")
+import Strategy:filter_elements!
 
-function filter!(A::HeapedVector{T}, x::T) where{T} 
+function filter_elements!(A::HeapedVector{T}, x::T) where{T} 
     func(y) = A.by(y) < A.by(x)
     filter!(func, A.data)
 
@@ -99,10 +101,10 @@ function filter!(A::HeapedVector{T}, x::T) where{T}
 
     ar = heaping(A.data, A.by)
     for i = 1:length(A.data)
-        A.data[i] = ar[i] 
+        A.data[i] = ar[i]
     end
 
-    return A 
-end    
+    return A
+end
 
 end

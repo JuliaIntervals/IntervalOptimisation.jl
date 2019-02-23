@@ -12,6 +12,8 @@ using .HeapedVectors
 
 using IntervalArithmetic, IntervalRootFinding
 
+include("Strategy.jl")
+using Strategy:filter_elements!
 include("optimise.jl")
 
 const minimize = minimise

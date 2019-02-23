@@ -1,11 +1,11 @@
 ﻿"""
-    minimise(f, X, structure = SortedVector, tol=1e-3) 
+    minimise(f, X, structure = SortedVector, tol=1e-3)
     or
     minimise(f, X, structure = HeapedVector, tol=1e-3)
-    or 
+    or
     minimise(f, X, tol=1e-3) in this case the default value of "structure" is "HeapedVector"
 
-Find the global minimum of the function `f` over the `Interval` or `IntervalBox` `X` using the Moore-Skelboe algorithm. By specifing the way in which vector element are kept arranged which is in heaped array or in sorted array. If you not specify any particular strategy to keep vector elements arranged then by default heaped array is used.  
+Find the global minimum of the function `f` over the `Interval` or `IntervalBox` `X` using the Moore-Skelboe algorithm. By specifing the way in which vector element are kept arranged which is in heaped array or in sorted array. If you not specify any particular strategy to keep vector elements arranged then by default heaped array is used.
 
 For higher-dimensional functions ``f:\\mathbb{R}^n \\to \\mathbb{R}``, `f` must take a single vector argument.
 
@@ -26,7 +26,7 @@ function minimise(f, X::T ; structure = HeapedVector, tol=1e-3 ) where {T}
     while !isempty(working)
 
         (X, X_min) = popfirst!(working)
-        
+
         if X_min > global_min    # X_min == inf(f(X))
             continue
         end
@@ -39,8 +39,8 @@ function minimise(f, X::T ; structure = HeapedVector, tol=1e-3 ) where {T}
         end
 
         # Remove all boxes whose lower bound is greater than the current one:
-        filter!(working , (X, global_min) )
-      
+        filter_elements!(working , (X, global_min) )
+
         if diam(X) < tol
             push!(minimizers, X)
         else
