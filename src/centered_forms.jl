@@ -13,7 +13,7 @@ this gives a second-order approximation.
 function mean_value_form_scalar(f, X)
     m = IntervalBox(mid(X))
 
-    return f(m) + gradient(f, X) ⋅ (X - m)
+    return f(m) + gradient(f, X.v) ⋅ (X - m)
 end
 
 mean_value_form_scalar(f) = X -> mean_value_form_scalar(f, X)
