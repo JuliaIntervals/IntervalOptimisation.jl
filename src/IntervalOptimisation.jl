@@ -12,9 +12,10 @@ using .HeapedVectors
 
 using IntervalArithmetic, IntervalRootFinding
 
-include("Strategy.jl")
-using Strategy:filter_elements!
+include("StrategyBase.jl")
+using .StrategyBase
 include("optimise.jl")
+
 
 const minimize = minimise
 const maximize = maximise

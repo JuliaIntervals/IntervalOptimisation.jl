@@ -7,7 +7,11 @@ import Base: getindex, length, push!, isempty,
 
 export HeapedVector
 
-struct HeapedVector{T, F<:Function}
+include("StrategyBase.jl")
+import .StrategyBase:filter_elements!
+using .StrategyBase
+
+struct HeapedVector{T, F<:Function} <: Strategy
     data::Vector{T}
     by::F
     function HeapedVector(v::Vector{T}, by::F) where {T, F}
@@ -88,10 +92,7 @@ function bubbledown!(v::HeapedVector{T}, index) where{T}
     end
 end
 
-include("Strategy.jl")
-import Strategy:filter_elements!
-
-function filter_elements!(A::HeapedVector{T}, x::T) where{T} 
+function filter_elements!(A::HeapedVector{T}, x::T) where{T}
     func(y) = A.by(y) < A.by(x)
     filter!(func, A.data)
 

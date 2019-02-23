@@ -7,7 +7,12 @@ import Base: getindex, length, push!, isempty,
 
 export SortedVector
 
-struct SortedVector{T, F<:Function}
+include("StrategyBase.jl")
+import .StrategyBase:filter_elements!
+using .StrategyBase
+
+struct SortedVector{T, F<:Function} <: Strategy
+
     data::Vector{T}
     by::F
 
@@ -38,9 +43,6 @@ isempty(v::SortedVector) = isempty(v.data)
 pop!(v::SortedVector) = pop!(v.data)
 
 popfirst!(v::SortedVector) = popfirst!(v.data)
-
-include("Strategy.jl")
-import Strategy:filter_elements!
 
 function filter_elements!(v::SortedVector{T}, x::T) where {T}
     cutoff = searchsortedfirst(v.data, x, by=v.by)

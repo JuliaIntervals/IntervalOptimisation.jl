@@ -2,7 +2,7 @@ module OneDimExamples
 
 using IntervalArithmetic, IntervalOptimisation
 
-struct working_function{string, F<:Function, reg<:Interval} 
+struct working_function{string, F<:Function, reg<:Interval}
     func::F
     region::reg
     title::string
@@ -15,7 +15,7 @@ func3 = working_function("quadritic equation", Interval(-4,6), x->(x-6)*(x+4)*(7
 
 const region=(-4..6)
 
-end 
+end
 
 
 
@@ -23,7 +23,7 @@ module TwoDimExamples
 
 using IntervalArithmetic, IntervalOptimisation
 
-struct working_function{string, F<:Function, reg<:Union{Interval, IntervalBox}}  
+struct working_function{string, F<:Function, reg<:Union{Interval, IntervalBox}}
     func::F
     region::reg
     title::string
@@ -34,13 +34,3 @@ rosenbrock(xx) = ( (x, y) = xx; 100*(y - x)^2 + (x - 1)^2 )
 Rosenbrock = working_function(rosenbrock, IntervalBox(-5..5, 2), "Rosenbrock function")
 
 end
-
-
-
-
-
-
-
-
-
-
