@@ -3,22 +3,18 @@ __precompile__()
 module SortedVectors
 
 import Base: getindex, length, push!, isempty,
-        pop!, resize!, popfirst!
+        pop!, filter!, popfirst!
 
 export SortedVector
 
-"""
-A `SortedVector` behaves like a standard Julia `Vector`, except that its elements are stored in sorted order, with an optional function `by` that determines the sorting order in the same way as `Base.searchsorted`.
-"""
-struct SortedVector{T, F<:Function}
+struct SortedVector{T, F<:Function} 
     data::Vector{T}
     by::F
 
     function SortedVector(data::Vector{T}, by::F) where {T,F}
-        new{T,F}(sort(data,by=by), by)
+        new{T,F}(sort(data, by = by), by)
     end
-end
-
+end  
 
 SortedVector(data::Vector{T}) where {T} = SortedVector(data, identity)
 
@@ -43,9 +39,9 @@ pop!(v::SortedVector) = pop!(v.data)
 
 popfirst!(v::SortedVector) = popfirst!(v.data)
 
-
-function resize!(v::SortedVector, n::Int)
-    resize!(v.data, n)
+function filter!(v::SortedVector{T}, x::T) where {T}  
+    cutoff = searchsortedfirst(v.data, x, by=v.by)
+    resize!(v.data, cutoff-1)
     return v
 end
 
