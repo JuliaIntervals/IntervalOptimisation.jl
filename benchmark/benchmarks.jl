@@ -12,17 +12,17 @@ S = SUITE["One dimentional function"] = BenchmarkGroup()
 
 for func in (OneDimExamples.func1, OneDimExamples.func2, OneDimExamples.func3)
     s = S[func.title] = BenchmarkGroup()
-	for Structure in (HeapedVector, SortedVector)
-		s[string(Structure)] = @benchmarkable minimise($(func.func), $(func.region), $Structure)
+	for structure in (HeapedVector, SortedVector)
+		s[string(Structure)] = @benchmarkable minimise($(func.func), $(func.region), $structure)
     end
 end
 
 
-S = SUITE["Two dimentional function"] = BenchmarkGroup()
+S = SUITE["Two dimensional function"] = BenchmarkGroup()
 
 for func in (TwoDimExamples.Rosenbrock)
     s = S[func.title] = BenchmarkGroup()
-	for Structure in (HeapedVector, SortedVector)
-		s[string(Structure)] = @benchmarkable minimise($(func.func), $(func.region), structure = $Structure)
+	for structure in (HeapedVector, SortedVector)
+		s[string(Structure)] = @benchmarkable minimise($(func.func), $(func.region), $structure )
     end
 end

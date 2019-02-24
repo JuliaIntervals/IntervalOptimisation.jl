@@ -7,9 +7,8 @@ import Base: getindex, length, push!, isempty,
 
 export HeapedVector
 
-include("StrategyBase.jl")
-import .StrategyBase:filter_elements!
-using .StrategyBase
+import ..StrategyBase:filter_elements!
+using ..StrategyBase
 
 struct HeapedVector{T, F<:Function} <: Strategy
     data::Vector{T}
@@ -100,12 +99,10 @@ function filter_elements!(A::HeapedVector{T}, x::T) where{T}
         return A
     end
 
-    ar = heaping(A.data, A.by)
-    for i = 1:length(A.data)
-        A.data[i] = ar[i]
-    end
-
+    ar = (heaping(A.data, A.by))
+	convert(typeof(ar), A.data)
     return A
+
 end
 
 end

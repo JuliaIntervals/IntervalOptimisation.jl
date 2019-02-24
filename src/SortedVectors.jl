@@ -7,9 +7,8 @@ import Base: getindex, length, push!, isempty,
 
 export SortedVector
 
-include("StrategyBase.jl")
-import .StrategyBase:filter_elements!
-using .StrategyBase
+import ..StrategyBase:filter_elements!
+using ..StrategyBase
 
 struct SortedVector{T, F<:Function} <: Strategy
 
@@ -26,8 +25,6 @@ SortedVector(data::Vector{T}) where {T} = SortedVector(data, identity)
 function show(io::IO, v::SortedVector)
     print(io, "SortedVector($(v.data))")
 end
-
-
 
 getindex(v::SortedVector, i::Int) = v.data[i]
 length(v::SortedVector) = length(v.data)

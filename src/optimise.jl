@@ -17,7 +17,6 @@ function minimise(f, X::T ; structure = HeapedVector, tol=1e-3 ) where {T}
 
     # list of boxes with corresponding lower bound, arranged according to selected structure :
     working = structure([(X, ∞)], x->x[2])
-
     minimizers = T[]
     global_min = ∞  # upper bound
 

@@ -4,6 +4,9 @@ export minimise, maximise,
        minimize, maximize
 export HeapedVector, SortedVector
 
+include("StrategyBase.jl")
+using .StrategyBase
+
 include("SortedVectors.jl")
 using .SortedVectors
 
@@ -12,8 +15,6 @@ using .HeapedVectors
 
 using IntervalArithmetic, IntervalRootFinding
 
-include("StrategyBase.jl")
-using .StrategyBase
 include("optimise.jl")
 
 
