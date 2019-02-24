@@ -3,7 +3,7 @@ __precompile__()
 module SortedVectors
 
 import Base: getindex, length, push!, isempty,
-        pop!, filter!, popfirst!
+        pop!, popfirst!
 
 export SortedVector
 

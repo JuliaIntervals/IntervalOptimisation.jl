@@ -99,8 +99,7 @@ function filter_elements!(A::HeapedVector{T}, x::T) where{T}
         return A
     end
 
-    ar = (heaping(A.data, A.by))
-	convert(typeof(ar), A.data)
+    heaping(A.data, A.by)
     return A
 
 end
