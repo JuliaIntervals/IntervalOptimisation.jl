@@ -17,7 +17,7 @@ using Test
         global_min, minimisers = minimise(x->(x^2-2)^2, -10..11)
         @test global_min ⊆ 0..1e-7
         @test length(minimisers) == 2
-        @test sqrt(2) ∈ minimisers[2]
+        @test sqrt(2) ∈ max(minimisers[2],minimisers[1])
     end
 
     for Structure in (SortedVector, HeapedVector)
