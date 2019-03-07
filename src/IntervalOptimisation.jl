@@ -15,6 +15,8 @@ using .HeapedVectors
 
 using IntervalArithmetic, IntervalRootFinding
 
+include("priorityqueue.jl")
+
 include("optimise.jl")
 
 
