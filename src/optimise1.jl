@@ -82,26 +82,22 @@ struct IntervalBoxMinimum{N, T<:Real}
     minimum::T
 end
 
-"""
-Datatype to provide constraints to Global Optimisation such as:
-```
-Constraint(x->(x^2 - 10), -∞..1)
-```
-"""
-struct Constraint{T<:Real}
-    f::Function
-    c::Interval{T}
-end
+
 
 Base.isless(a::IntervalBoxMinimum{N, T}, b::IntervalBoxMinimum{N, T}) where {N, T<:Real} = isless(a.minimum, b.minimum)
 
-function minimise_icp(f::Function, x::IntervalBox{N, T}; reltol=1e-3, abstol=1e-3) where {N, T<:Real}
+function minimise_icp(f::Function, x::IntervalBox{N, T}, var ; reltol=1e-3, abstol=1e-3) where {N, T<:Real}
 
     Q = binary_minheap(IntervalBoxMinimum{N, T})
 
     global_minimum = ∞
 
-    x = icp(f, x, -∞..global_minimum)
+    variables = []
+    for i in var append!(variables, Unknown(i)) end
+
+    f_op = f(variables...)
+    C = Contractor(f_op)
+    x = C(-∞..global_minimum, x)
 
     arg_minima = IntervalBox{N, T}[]
 
@@ -125,7 +121,8 @@ function minimise_icp(f::Function, x::IntervalBox{N, T}; reltol=1e-3, abstol=1e-
             global_minimum = current_minimum
         end
 
-        X = icp(f, p.interval, -∞..global_minimum)
+        C = Contractor(f_op)
+        X = C(-∞..global_minimum, p.interval)
 
         if diam(p.interval) < abstol
             push!(arg_minima, p.interval)
@@ -141,17 +138,30 @@ function minimise_icp(f::Function, x::IntervalBox{N, T}; reltol=1e-3, abstol=1e-
     return lb..global_minimum, arg_minima
 end
 
-function minimise_icp_constrained(f::Function, x::IntervalBox{N, T}, constraints::Vector{Constraint{T}} = Vector{Constraint{T}}(); reltol=1e-3, abstol=1e-3) where {N, T<:Real}
+
+struct ConstraintCond{T}
+    f ::Operation
+    c ::Interval{T}
+end
+
+
+function minimise_icp_constrained(f::Function, x::IntervalBox{N,T}, var, constraints::Vector{ConstraintCond{T}} = Vector{ConstraintCond{T}}(); reltol=1e-3, abstol=1e-3) where {N, T<:Real}
 
     Q = binary_minheap(IntervalBoxMinimum{N, T})
 
     global_minimum = ∞
 
     for t in constraints
-        x = icp(t.f, x, t.c)
+        C = Contractor(t.f, var)
+        x = C(t.c, x)
     end
 
-    x = icp(f, x, -∞..global_minimum)
+    variables = []
+    for i in var append!(variables, Unknown(i)) end
+
+    f_op = f(variables...)
+    C = Contractor(f_op)
+    x = C(-∞..global_minimum, x)
 
     arg_minima = IntervalBox{N, T}[]
 
@@ -176,10 +186,13 @@ function minimise_icp_constrained(f::Function, x::IntervalBox{N, T}, constraints
             global_minimum = current_minimum
         end
 
-        X = icp(f, p.interval, -∞..global_minimum)
+        C = Contractor(f_op)
+        X = C(-∞..global_minimum, p.interval)
 
         for t in constraints
-            X = icp(t.f, X, t.c)
+            C = Contractor(t.f, var)
+            A = Interval(a)
+            X = C(A, X)
         end
 
         if diam(p.interval) < abstol
