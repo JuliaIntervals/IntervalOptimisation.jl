@@ -1,7 +1,7 @@
 # NEWS for IntervalOptimisation.jl
 
 ## v0.4
-- This version have some new features added. 
+- Drop support for Julia 0.7  
 
 ## v0.3
 - Drop support for Julia 0.6. The package is now fully compatible with Julia 1.0.
