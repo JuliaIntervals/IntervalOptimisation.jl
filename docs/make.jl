@@ -5,7 +5,7 @@ makedocs(
     modules = [IntervalOptimisation],
     format = Documenter.HTML(),
     sitename = "IntervalOptimisation.jl",
-    pages = Any["Home" => "index.md"],
+    pages = ["Home" => "index.md"],
     authors = "David Sanders"
 )
 
