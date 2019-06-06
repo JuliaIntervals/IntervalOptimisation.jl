@@ -1,6 +1,7 @@
-import Documenter
+using Documenter
+using IntervalArithmetic, IntervalOptimisation
 
-Documenter.makedocs(
+makedocs(
     modules = [IntervalOptimisation],
     format = :html,
     sitename = "IntervalOptimisation.jl",
@@ -13,7 +14,7 @@ Documenter.makedocs(
 )
 
 
-Documenter.deploydocs(
+deploydocs(
     repo = "github.com/dpsanders/IntervalOptimisation.jl.git",
     target = "build",
     deps = nothing,
