@@ -1,5 +1,4 @@
-using Documenter
-using IntervalArithmetic, IntervalOptimisation
+using Documenter, IntervalOptimisation
 
 makedocs(
     modules = [IntervalOptimisation],

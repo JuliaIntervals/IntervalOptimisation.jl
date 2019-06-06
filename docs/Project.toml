@@ -1,0 +1,6 @@
+name = "docs"
+uuid = "6854bdac-4683-567a-be4f-b22094e82ce7"
+
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+IntervalOptimisation = "c7c68f13-a4a2-5b9a-b424-07d005f8d9d2"
