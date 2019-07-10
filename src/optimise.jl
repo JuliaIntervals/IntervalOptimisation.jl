@@ -69,7 +69,7 @@ Find the global maximum of the function `f` over the `Interval` or `IntervalBox`
 using the Moore-Skelboe algorithm. See [`minimise`](@ref) for a description
 of the available options.
 """
-function maximise(f, X::T; structure = HeapedVector, tol=1e-3) where {T}
-    bound, minimizers = minimise(x -> -f(x), X, structure, tol)
+function maximise(f, X::T; structure=HeapedVector, tol=1e-3) where {T}
+    bound, minimizers = minimise(x -> -f(x), X, structure=structure, tol=tol)
     return -bound, minimizers
 end
