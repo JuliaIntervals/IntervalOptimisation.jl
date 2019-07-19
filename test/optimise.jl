@@ -1,4 +1,4 @@
-﻿using IntervalArithmetic, IntervalOptimisation
+using IntervalArithmetic, IntervalOptimisation
 using Test
 
 @testset "IntervalOptimisation tests" begin
@@ -8,6 +8,12 @@ using Test
         @test global_min ⊆ -10 .. -9.999
         @test length(minimisers) == 1
         @test minimisers[1] ⊆ -10 .. -9.999
+
+        # same but with maximise
+        global_max, maximisers = maximise(x->x, -10..10)
+        @test global_max ⊆ 9.999 .. 10
+        @test length(maximisers) == 1
+        @test maximisers[1] ⊆ 9.999 .. 10
 
         global_min, minimisers = minimise(x->x^2, -10..11, tol = 1e-10)
         @test global_min ⊆ 0..1e-20
@@ -27,6 +33,12 @@ using Test
             @test global_min ⊆ -10 .. -9.999
             @test length(minimisers) == 1
             @test minimisers[1] ⊆ -10 .. -9.999
+
+            # same but with maximise
+            global_max, maximisers = maximise(x->x, -10..10, structure = Structure)
+            @test global_max ⊆ 9.999 .. 10
+            @test length(maximisers) == 1
+            @test maximisers[1] ⊆ 9.999 .. 10
 
             global_min, minimisers = minimise(x->x^2, -10..11, tol=1e-10, structure = Structure)
             @test global_min ⊆ 0..1e-20
@@ -55,6 +67,12 @@ using Test
             global_min, minimisers = minimise( X -> ( (x,y) = X; x^2 + y^2 ), (-10..10) × (-10..10), structure = Structure )
             @test global_min ⊆ 0..1e-7
             @test all(X ⊆ (-1e-3..1e3) × (-1e-3..1e-3) for X in minimisers)
+
+            # same but with maximise
+            global_max, maximisers = maximise( X -> ( (x,y) = X; x^2 + y^2 ), (-10..10) × (-10..10), structure = Structure )
+            @test global_max ⊆ 199.9..200
+            m = (9.99..10)
+            @test all(X ⊆ m × m || X ⊆ -m × m || X ⊆ m × -m || X ⊆ -m × -m for X in maximisers)
         end
 
     end
