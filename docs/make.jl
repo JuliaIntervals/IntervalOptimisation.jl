@@ -1,20 +1,16 @@
-import Documenter
+using Documenter, IntervalOptimisation
 
-Documenter.makedocs(
+makedocs(
     modules = [IntervalOptimisation],
-    format = :html,
+    format = Documenter.HTML(),
     sitename = "IntervalOptimisation.jl",
-    root = joinpath(dirname(dirname(@__FILE__)), "docs"),
-    pages = Any["Home" => "index.md"],
-    strict = true,
-    linkcheck = true,
-    checkdocs = :exports,
+    pages = ["Home" => "index.md"],
     authors = "David Sanders"
 )
 
 
 Documenter.deploydocs(
-    repo = "github.com/dpsanders/IntervalOptimisation.jl.git",
+    repo = "github.com/JuliaIntervals/IntervalOptimisation.jl.git",
     target = "build",
     deps = nothing,
     make = nothing
