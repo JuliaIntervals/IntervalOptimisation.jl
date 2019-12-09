@@ -1,7 +1,16 @@
 using IntervalArithmetic, IntervalOptimisation
 using Test
+using IntervalOptimisation: numeric_type
 
 @testset "IntervalOptimisation tests" begin
+    @testset "numeric_type" begin
+        x = -10..10
+        big_x = big(x)
+        @test numeric_type(x) == Float64
+        @test numeric_type(big_x) == BigFloat
+        @test numeric_type(IntervalBox(x, x)) == Float64
+        @test numeric_type(IntervalBox(big_x, big_x)) == BigFloat
+    end
 
     @testset "Minimise in 1D using default data structure i.e HeapedVector" begin
         global_min, minimisers = minimise(x->x, -10..10)
