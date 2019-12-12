@@ -13,7 +13,7 @@ using .SortedVectors
 include("HeapedVectors.jl")
 using .HeapedVectors
 
-using IntervalArithmetic, IntervalRootFinding
+using IntervalArithmetic
 
 include("optimise.jl")
 

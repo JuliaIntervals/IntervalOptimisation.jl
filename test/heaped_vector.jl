@@ -1,7 +1,7 @@
 using IntervalOptimisation
 using Test
 
-const HeapedVector = IntervalOptimisation.HeapedVector
+using IntervalOptimisation: HeapedVector
 
 @testset "heap" begin
 	
