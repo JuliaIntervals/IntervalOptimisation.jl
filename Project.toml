@@ -1,21 +1,13 @@
 name = "IntervalOptimisation"
 uuid = "c7c68f13-a4a2-5b9a-b424-07d005f8d9d2"
-version = "0.4.0" 
-
-[compat]
-DataStructures = "≥ 0.9.0"
-ForwardDiff = "≥ 0.8.0"
-IntervalArithmetic = "≥ 0.15.0"
-IntervalConstraintProgramming = "≥ 0.9.0"
-IntervalRootFinding = "≥ 0.4.0"
-julia = "≥ 1.0.0"
+version = "0.4.1"
 
 [deps]
-DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
-ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 IntervalArithmetic = "d1acc4aa-44c8-5952-acd4-ba5d80a2a253"
-IntervalConstraintProgramming = "138f1668-1576-5ad7-91b9-7425abbf3153"
-IntervalRootFinding = "d2bf35a9-74e0-55ec-b149-d360ff49b807"
+
+[compat]
+IntervalArithmetic = "0.15, 0.16"
+julia = "1.0"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

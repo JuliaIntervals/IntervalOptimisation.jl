@@ -1,4 +1,7 @@
-﻿"""
+﻿numeric_type(::Interval{T}) where {T} = T
+numeric_type(::IntervalBox{N, T}) where {N, T} = T
+
+"""
     minimise(f, X, structure = SortedVector, tol=1e-3)
     or
     minimise(f, X, structure = HeapedVector, tol=1e-3)
@@ -16,11 +19,12 @@ For higher-dimensional functions ``f:\\mathbb{R}^n \\to \\mathbb{R}``, `f` must 
 Returns an interval containing the global minimum, and a list of boxes that contain the minimisers.
 """
 function minimise(f, X::T; structure = HeapedVector, tol=1e-3) where {T}
-
+    nT = numeric_type(X)
+    
     # list of boxes with corresponding lower bound, arranged according to selected structure :
-    working = structure([(X, ∞)], x->x[2])
+    working = structure([(X, nT(∞))], x->x[2])
     minimizers = T[]
-    global_min = ∞  # upper bound
+    global_min = nT(∞)  # upper bound
 
     num_bisections = 0
 
