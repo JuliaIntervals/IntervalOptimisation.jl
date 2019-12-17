@@ -39,7 +39,6 @@ function minimise(f, X::T; structure = HeapedVector, tol=1e-3, f_calls_limit=Inf
 
         # find candidate for upper bound of global minimum by just evaluating a point in the interval:
         m = sup(f(Interval.(mid.(X))))   # evaluate at midpoint of current interval
-        f_calls += 3
 
         if m < global_min
             global_min = m
@@ -57,7 +56,9 @@ function minimise(f, X::T; structure = HeapedVector, tol=1e-3, f_calls_limit=Inf
             num_bisections += 1
         end
 
-        if (f_calls >= f_calls_limit)
+        f_calls += 3 # we called the function 3 times
+        # we still need length(minimizers) + 1 evaluations to compute lower_bound
+        if ((f_calls + length(minimizers) + 1) >= f_calls_limit)
             push!(minimizers, X)
             break
         end
