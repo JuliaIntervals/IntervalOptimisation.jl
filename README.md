@@ -33,7 +33,7 @@ They return an `Interval` that is guaranteed to contain the global minimum (maxi
 
 
 #### 1D
-```
+```julia
 using IntervalArithmetic, IntervalOptimisation
 
 julia> @time global_min, minimisers = minimise(x -> (x^2 - 2)^2, -10..11);
@@ -50,7 +50,7 @@ julia> minimisers
 
 #### 2D
 
-```
+```julia
 julia> @time global_min, minimisers = minimise(  X -> ( (x,y) = X; x^2 + y^2 ),
                                                         (-10000..10001) × (-10000..10001) );
   0.051122 seconds (46.80 k allocations: 2.027 MiB)
