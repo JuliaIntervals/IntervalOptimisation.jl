@@ -1,3 +1,5 @@
+﻿numeric_type(::Interval{T}) where {T} = T
+numeric_type(::IntervalBox{N, T}) where {N, T} = T
 
 interval_mid(X::Interval) = Interval(mid(X))
 interval_mid(X::IntervalBox) = IntervalBox(mid(X))
@@ -5,19 +7,29 @@ interval_mid(X::IntervalBox) = IntervalBox(mid(X))
 """
     minimise(f, X, tol=1e-3)
 
-Find the global minimum of the function `f` over the `Interval` or `IntervalBox` `X` using the Moore-Skelboe algorithm.
+    minimise(f, X, structure = SortedVector, tol=1e-3)
+    or
+    minimise(f, X, structure = HeapedVector, tol=1e-3)
+    or
+    minimise(f, X, tol=1e-3) in this case the default value of "structure" is "HeapedVector"
+
+Find the global minimum of the function `f` over the `Interval` or `IntervalBox` `X`
+using the Moore-Skelboe algorithm. The way in which vector elements are
+kept arranged can be either a heaped array or a sorted array.
+If you not specify any particular strategy to keep vector elements arranged then
+by default heaped array is used.
 
 For higher-dimensional functions ``f:\\mathbb{R}^n \\to \\mathbb{R}``, `f` must take a single vector argument.
 
 Returns an interval containing the global minimum, and a list of boxes that contain the minimisers.
 """
-function minimise(f, X::T, tol=1e-3) where {T}
-
-    # list of boxes with corresponding lower bound, ordered by increasing lower bound:
-    working = SortedVector([(X, ∞)], x->x[2])
-
+function minimise(f, X::T; structure = HeapedVector, tol=1e-3) where {T}
+    nT = numeric_type(X)
+    
+    # list of boxes with corresponding lower bound, arranged according to selected structure :
+    working = structure([(X, nT(∞))], x->x[2])
     minimizers = T[]
-    global_min = ∞  # upper bound
+    global_min = nT(∞)  # upper bound
 
     num_bisections = 0
 
@@ -37,17 +49,14 @@ function minimise(f, X::T, tol=1e-3) where {T}
         end
 
         # Remove all boxes whose lower bound is greater than the current one:
-        # Since they are ordered, just find the first one that is too big
-
-        cutoff = searchsortedfirst(working.data, (X, global_min), by=x->x[2])
-        resize!(working, cutoff-1)
+        filter_elements!(working , (X, global_min) )
 
         if diam(X) < tol
             push!(minimizers, X)
-
         else
             X1, X2 = bisect(X)
-            push!( working, (X1, inf(f(X1))), (X2, inf(f(X2))) )
+            push!( working, (X1, inf(f(X1))) )
+            push!( working, (X2, inf(f(X2))) )
             num_bisections += 1
         end
 
@@ -58,8 +67,18 @@ function minimise(f, X::T, tol=1e-3) where {T}
     return Interval(lower_bound, global_min), minimizers
 end
 
+"""
+    maximise(f, X, structure = SortedVector, tol=1e-3)
+    or
+    maximise(f, X, structure = HeapedVector, tol=1e-3)
+    or
+    maximise(f, X, tol=1e-3) in this case the default value of "structure" is "HeapedVector"
 
-function maximise(f, X::T, tol=1e-3) where {T}
-    bound, minimizers = minimise(x -> -f(x), X, tol)
+Find the global maximum of the function `f` over the `Interval` or `IntervalBox` `X`
+using the Moore-Skelboe algorithm. See [`minimise`](@ref) for a description
+of the available options.
+"""
+function maximise(f, X::T; structure=HeapedVector, tol=1e-3) where {T}
+    bound, minimizers = minimise(x -> -f(x), X, structure=structure, tol=tol)
     return -bound, minimizers
 end

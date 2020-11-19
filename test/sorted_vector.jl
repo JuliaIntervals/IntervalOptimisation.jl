@@ -1,7 +1,7 @@
 using IntervalOptimisation
 using Test
 
-const SortedVector = IntervalOptimisation.SortedVector
+using IntervalOptimisation: SortedVector
 
 @testset "SortedVector" begin
 
