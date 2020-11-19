@@ -5,6 +5,8 @@ interval_mid(X::Interval) = Interval(mid(X))
 interval_mid(X::IntervalBox) = IntervalBox(mid(X))
 
 """
+    minimise(f, X, tol=1e-3)
+
     minimise(f, X, structure = SortedVector, tol=1e-3)
     or
     minimise(f, X, structure = HeapedVector, tol=1e-3)

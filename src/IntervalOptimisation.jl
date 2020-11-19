@@ -21,7 +21,6 @@ using .HeapedVectors
 include("optimise.jl")
 include("centered_forms.jl")
 
-
 const minimize = minimise
 const maximize = maximise
 
