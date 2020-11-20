@@ -6,8 +6,8 @@ os:
   - osx
 
 julia:
-  - 0.7
   - 1.0
+  - 1.5
   - nightly
 
 notifications:
@@ -15,7 +15,6 @@ notifications:
 
 matrix:
   allow_failures:
-    - julia: 0.7
     - julia: nightly
 
 after_success:
