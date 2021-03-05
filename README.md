@@ -2,6 +2,7 @@
 
 [![travis badge][travis_badge]][travis_url]
 [![appveyor badge][appveyor_badge]][appveyor_url]
+[![doc badge][doc_badge]][doc_url]
 [![codecov badge][codecov_badge]][codecov_url]
 
 [travis_badge]: https://travis-ci.org/JuliaIntervals/IntervalOptimisation.jl.svg?branch=master
@@ -13,8 +14,8 @@
 [codecov_badge]: http://codecov.io/github/JuliaIntervals/IntervalOptimisation.jl/coverage.svg?branch=master
 [codecov_url]: http://codecov.io/github/JuliaIntervals/IntervalOptimisation.jl?branch=master
 
-[documenter_stable]: https://JuliaIntervals.github.io/IntervalOptimisation.jl/stable
-[documenter_latest]: https://JuliaIntervals.github.io/IntervalOptimisation.jl/latest
+[doc_badge]: https://img.shields.io/badge/docs-stable-blue.svg
+[doc_url]: https://juliaintervals.github.io/pages/packages/intervaloptimisation/
 
 
 ## Rigorous global optimisation using Julia
@@ -23,6 +24,11 @@ This package provides rigorous global optimisation routines written in pure Juli
 
 Currently, the package uses an implementation of the Moore-Skelboe algorithm.
 
+## Documentation
+Documentation for the package is available [here][doc_url].
+
+The best way to learn how to use the package is to look at the tutorial, available in the organisation webpage [here](https://juliaintervals.github.io/pages/tutorials/tutorialOptimisation/).
+
 ## Usage  
 
 Functions `minimise` and `maximise` are provided to find the **global** minimum or maximum, respectively, of a standard Julia function `f` of one or several variables.
@@ -30,7 +36,6 @@ Functions `minimise` and `maximise` are provided to find the **global** minimum 
 They return an `Interval` that is guaranteed to contain the global minimum (maximum), and a `Vector` of `Interval`s or `IntervalBox`es whose union contains all the minimisers.
 
 ### Examples
-
 
 #### 1D
 ```julia
