@@ -1,14 +1,11 @@
 # `IntervalOptimisation.jl`
 
-[![travis badge][travis_badge]][travis_url]
-[![appveyor badge][appveyor_badge]][appveyor_url]
+[![github badge][gh_badge]][gh_url]
 [![codecov badge][codecov_badge]][codecov_url]
 
-[travis_badge]: https://travis-ci.org/JuliaIntervals/IntervalOptimisation.jl.svg?branch=master
-[travis_url]: https://travis-ci.org/JuliaIntervals/IntervalOptimisation.jl
+[gh_badge]: https://github.com/JuliaIntervals/IntervalOptimisation.jl/workflows/CI/badge.svg
+[gh_url]: https://github.com/JuliaIntervals/IntervalOptimisation.jl/actions
 
-[appveyor_badge]: https://ci.appveyor.com/api/projects/status/github/JuliaIntervals/IntervalOptimisation.jl?svg=true&branch=master
-[appveyor_url]: https://ci.appveyor.com/project/JuliaIntervals/intervaloptimisation-jl
 
 [codecov_badge]: http://codecov.io/github/JuliaIntervals/IntervalOptimisation.jl/coverage.svg?branch=master
 [codecov_url]: http://codecov.io/github/JuliaIntervals/IntervalOptimisation.jl?branch=master
