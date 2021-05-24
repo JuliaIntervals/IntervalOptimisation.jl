@@ -43,7 +43,10 @@ popfirst!(v::SortedVector) = popfirst!(v.data)
 
 function filter_elements!(v::SortedVector{T}, x::T) where {T}
     cutoff = searchsortedfirst(v.data, x, by=v.by)
-    resize!(v.data, cutoff-1)
+    if cutoff >= length(v.data)
+        return v
+    end
+    resize!(v.data, cutoff)
     return v
 end
 
