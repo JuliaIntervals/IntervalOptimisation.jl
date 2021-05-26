@@ -102,6 +102,12 @@ using IntervalOptimisation: numeric_type
 
         end
 
+        @testset "Non smooth function in 2D" begin
+            global_min, minimisers = minimise( X -> ( (x,y) = X; abs(x-y) + abs(x) ), (-1..1) × (-1..1), structure = Structure )
+            @test global_min ⊆ 0..0 # it must return the exact minimum (if mid is used to find the first global_min)
+            @test all(X ⊆ (-2e-3.. 2e-3) × (-2e-3..2e-3) for X in minimisers)
+        end
+
     end
 
 end
