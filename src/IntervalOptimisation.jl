@@ -15,6 +15,7 @@ using .HeapedVectors
 
 using IntervalArithmetic
 
+include("utils.jl")
 include("optimise.jl")
 
 
