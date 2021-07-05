@@ -92,16 +92,7 @@ function bubbledown!(v::HeapedVector{T}, index) where{T}
 end
 
 function filter_elements!(A::HeapedVector{T}, x::T) where{T}
-    func(y) = A.by(y) < A.by(x)
-    filter!(func, A.data)
-
-    if length(A.data) == 0
-        return A
-    end
-
-    heaping(A.data, A.by)
     return A
-
 end
 
 end
