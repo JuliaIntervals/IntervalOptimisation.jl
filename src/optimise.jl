@@ -2,9 +2,9 @@
 numeric_type(::IntervalBox{N, T}) where {N, T} = T
 
 """
-    minimise(f, X, structure = SortedVector, tol=1e-3)
+    minimise(f, X, structure = SortedVector, tol=1e-3, unify=true)
     or
-    minimise(f, X, structure = HeapedVector, tol=1e-3)
+    minimise(f, X, structure = HeapedVector, tol=1e-3, unify=true)
     or
     minimise(f, X, tol=1e-3) in this case the default value of "structure" is "HeapedVector"
 
@@ -17,10 +17,12 @@ by default heaped array is used.
 For higher-dimensional functions ``f:\\mathbb{R}^n \\to \\mathbb{R}``, `f` must take a single vector argument.
 
 Returns an interval containing the global minimum, and a list of boxes that contain the minimisers.
+If `unify` is `true` (default) then the list of boxes is reduced with into the minimum set of non overlaping
+intervals.
 """
-function minimise(f, X::T; structure = HeapedVector, tol=1e-3) where {T}
+function minimise(f, X::T; structure = HeapedVector, tol=1e-3, unify=true) where {T}
     nT = numeric_type(X)
-    
+
     # list of boxes with corresponding lower bound, arranged according to selected structure :
     working = structure([(X, nT(∞))], x->x[2])
     minimizers = T[]
@@ -59,13 +61,17 @@ function minimise(f, X::T; structure = HeapedVector, tol=1e-3) where {T}
 
     lower_bound = minimum(inf.(f.(minimizers)))
 
+    if unify
+        minimizers = unify_boxes(minimizers)
+    end
+
     return Interval(lower_bound, global_min), minimizers
 end
 
 """
-    maximise(f, X, structure = SortedVector, tol=1e-3)
+    maximise(f, X, structure = SortedVector, tol=1e-3, unify=true)
     or
-    maximise(f, X, structure = HeapedVector, tol=1e-3)
+    maximise(f, X, structure = HeapedVector, tol=1e-3, unify=true)
     or
     maximise(f, X, tol=1e-3) in this case the default value of "structure" is "HeapedVector"
 
@@ -73,7 +79,7 @@ Find the global maximum of the function `f` over the `Interval` or `IntervalBox`
 using the Moore-Skelboe algorithm. See [`minimise`](@ref) for a description
 of the available options.
 """
-function maximise(f, X::T; structure=HeapedVector, tol=1e-3) where {T}
-    bound, minimizers = minimise(x -> -f(x), X, structure=structure, tol=tol)
+function maximise(f, X::T; structure=HeapedVector, tol=1e-3, unify=true) where {T}
+    bound, minimizers = minimise(x -> -f(x), X, structure=structure, tol=tol, unify=unify)
     return -bound, minimizers
 end
