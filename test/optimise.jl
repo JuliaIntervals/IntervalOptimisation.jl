@@ -35,6 +35,11 @@ using IntervalOptimisation: numeric_type
         @test length(minimisers) == 1
         @test minimisers[1] ⊆ -0.1..0.1
 
+        global n_calls = 0
+        f = x -> begin global n_calls += 1; x^2 end
+        global_min, minimisers = minimise(f, -10..11, tol = 1e-10, f_calls_limit = 10)
+        @test n_calls == 10 #note : for other values we can overshoot, since we call 3 times per iteration
+
         global_min, minimisers = minimise(x->(x^2-2)^2, -10..11)
         @test global_min ⊆ 0..1e-7
         @test length(minimisers) == 2

@@ -2,11 +2,11 @@
 numeric_type(::IntervalBox{N, T}) where {N, T} = T
 
 """
-    minimise(f, X, structure = SortedVector, tol=1e-3)
+    minimise(f, X, structure = SortedVector, tol=1e-3, f_calls_limit=Inf)
     or
-    minimise(f, X, structure = HeapedVector, tol=1e-3)
+    minimise(f, X, structure = HeapedVector, tol=1e-3, f_calls_limit=Inf)
     or
-    minimise(f, X, tol=1e-3) in this case the default value of "structure" is "HeapedVector"
+    minimise(f, X, tol=1e-3, f_calls_limit=Inf) in this case the default value of "structure" is "HeapedVector"
 
 Find the global minimum of the function `f` over the `Interval` or `IntervalBox` `X`
 using the Moore-Skelboe algorithm. The way in which vector elements are
@@ -18,7 +18,7 @@ For higher-dimensional functions ``f:\\mathbb{R}^n \\to \\mathbb{R}``, `f` must 
 
 Returns an interval containing the global minimum, and a list of boxes that contain the minimisers.
 """
-function minimise(f, X::T; structure = HeapedVector, tol=1e-3) where {T}
+function minimise(f, X::T; structure = HeapedVector, tol=1e-3, f_calls_limit=Inf) where {T}
     nT = numeric_type(X)
     
     # list of boxes with corresponding lower bound, arranged according to selected structure :
@@ -27,6 +27,7 @@ function minimise(f, X::T; structure = HeapedVector, tol=1e-3) where {T}
     global_min = nT(∞)  # upper bound
 
     num_bisections = 0
+    f_calls = 0
 
     while !isempty(working)
 
@@ -55,6 +56,12 @@ function minimise(f, X::T; structure = HeapedVector, tol=1e-3) where {T}
             num_bisections += 1
         end
 
+        f_calls += 3 # we called the function 3 times
+        # we still need length(minimizers) + 1 evaluations to compute lower_bound
+        if ((f_calls + length(minimizers) + 1) >= f_calls_limit)
+            push!(minimizers, X)
+            break
+        end
     end
 
     lower_bound = minimum(inf.(f.(minimizers)))
@@ -63,17 +70,17 @@ function minimise(f, X::T; structure = HeapedVector, tol=1e-3) where {T}
 end
 
 """
-    maximise(f, X, structure = SortedVector, tol=1e-3)
+    maximise(f, X, structure = SortedVector, tol=1e-3, f_calls_limit=Inf)
     or
-    maximise(f, X, structure = HeapedVector, tol=1e-3)
+    maximise(f, X, structure = HeapedVector, tol=1e-3, f_calls_limit=Inf)
     or
-    maximise(f, X, tol=1e-3) in this case the default value of "structure" is "HeapedVector"
+    maximise(f, X, tol=1e-3, f_calls_limit=Inf) in this case the default value of "structure" is "HeapedVector"
 
 Find the global maximum of the function `f` over the `Interval` or `IntervalBox` `X`
 using the Moore-Skelboe algorithm. See [`minimise`](@ref) for a description
 of the available options.
 """
-function maximise(f, X::T; structure=HeapedVector, tol=1e-3) where {T}
-    bound, minimizers = minimise(x -> -f(x), X, structure=structure, tol=tol)
+function maximise(f, X::T; structure=HeapedVector, tol=1e-3, f_calls_limit=Inf) where {T}
+    bound, minimizers = minimise(x -> -f(x), X, structure=structure, tol=tol, f_calls_limit=f_calls_limit)
     return -bound, minimizers
 end
