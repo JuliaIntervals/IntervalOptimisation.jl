@@ -1,6 +1,19 @@
 ﻿numeric_type(x::Interval) = IntervalArithmetic.numtype(x)
 numeric_type(v::AbstractVector{<:Interval}) = mapreduce(IntervalArithmetic.numtype, IntervalArithmetic.promote_numtype, v)
 
+_bisect(X::Interval) = bisect(X)
+
+function _bisect(X::AbstractVector{<:Interval})
+    i = argmax(diam.(X)) # find longest side
+
+    x1, x2 = _bisect(X[i],)
+
+    X1 = copy(X); X1[i] = x1
+    X2 = copy(X); X2[i] = x2
+
+    return (X1, X2)
+end
+
 """
     minimise(f, X, structure = SortedVector, tol=1e-3)
     or
@@ -49,7 +62,7 @@ function minimise(f, X::T; structure = HeapedVector, tol=1e-3) where {T}
         if maximum(diam, X) < tol
             push!(minimizers, X)
         else
-            X1, X2 = bisect(X)
+            X1, X2 = _bisect(X)
             push!( working, (X1, inf(f(X1))) )
             push!( working, (X2, inf(f(X2))) )
             num_bisections += 1
