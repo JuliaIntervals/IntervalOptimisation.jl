@@ -1,91 +1,70 @@
-# IntervalOptimisation
+<h1 align="center">
+IntervalOptimisation
 
-[![github badge][gh_badge]][gh_url]
-[![doc badge][doc_badge]][doc_url]
-[![codecov badge][codecov_badge]][codecov_url]
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaintervals.github.io/IntervalOptimisation.jl/stable)
+[![Build Status](https://github.com/JuliaIntervals/IntervalOptimisation.jl/workflows/CI/badge.svg)](https://github.com/JuliaIntervals/IntervalOptimisation.jl/actions/workflows/CI.yml)
+[![coverage](https://codecov.io/gh/JuliaIntervals/IntervalOptimisation.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaIntervals/IntervalOptimisation.jl)
+</h1>
 
-[gh_badge]: https://github.com/JuliaIntervals/IntervalOptimisation.jl/workflows/CI/badge.svg
-[gh_url]: https://github.com/JuliaIntervals/IntervalOptimisation.jl/actions/workflows/CI.yml
-
-
-[codecov_badge]: http://codecov.io/github/JuliaIntervals/IntervalOptimisation.jl/coverage.svg?branch=master
-[codecov_url]: http://codecov.io/github/JuliaIntervals/IntervalOptimisation.jl?branch=master
-
-[doc_badge]: https://img.shields.io/badge/docs-stable-blue.svg
-[doc_url]: https://juliaintervals.github.io/pages/packages/intervaloptimisation/
-
-
-## Rigorous global optimisation using Julia
-
-This package provides rigorous global optimisation routines written in pure Julia, using interval arithmetic provided by the author's [IntervalArithmetic.jl](https://github.com/JuliaIntervals/IntervalArithmetic.jl) package.
+IntervalOptimisation.jl is a Julia package for rigorous global optimisation routines, using interval arithmetic provided by the [IntervalArithmetic.jl](https://github.com/JuliaIntervals/IntervalArithmetic.jl) package.
 
 Currently, the package uses an implementation of the Moore-Skelboe algorithm.
 
 ## Documentation
-Documentation for the package is available [here][doc_url].
 
-The best way to learn how to use the package is to look at the tutorial, available in the organisation webpage [here](https://juliaintervals.github.io/pages/tutorials/tutorialOptimisation/).
+The official documentation is available online: https://juliaintervals.github.io/IntervalOptimisation.jl/stable.
 
 ## Usage
 
-Functions `minimise` and `maximise` are provided to find the **global** minimum or maximum, respectively, of a standard Julia function `f` of one or several variables.
+Functions `minimise` and `maximise` are provided to find the **global** minimum or maximum, respectively, of a function `f` of one or several variables.
 
-They return an `Interval` that is guaranteed to contain the global minimum (maximum), and a `Vector` of `Interval`s or `IntervalBox`es whose union contains all the minimisers.
+They return an `Interval` that is guaranteed to contain the global minimum (maximum), and a `Vector` of `Interval`s whose union contains all the minimisers.
 
 ### Examples
 
 #### 1D
+
 ```julia
 using IntervalArithmetic, IntervalOptimisation
 
-julia> @time global_min, minimisers = minimise(x -> (x^2 - 2)^2, -10..11);
-  0.046620 seconds (36.07 k allocations: 1.586 MiB)
+julia> global_min, minimisers = minimise(x -> (x^2 - interval(2))^2, interval(-10, 11));
 
 julia> global_min
-[0, 1.50881e-09]
+[0, 1.50881e-09]_com
 
 julia> minimisers
-2-element Array{IntervalArithmetic.Interval{Float64},1}:
-  [1.41387, 1.41453]
- [-1.41428, -1.41363]
+2-element Vector{Interval{Float64}}:
+ [-1.41428, -1.41363]_com
+  [1.41387, 1.41453]_com
 ```
 
 #### 2D
 
 ```julia
-julia> @time global_min, minimisers = minimise(  X -> ( (x,y) = X; x^2 + y^2 ),
-                                                        (-10000..10001) × (-10000..10001) );
-  0.051122 seconds (46.80 k allocations: 2.027 MiB)
+julia> global_min, minimisers = minimise(X -> ( (x,y) = X; x^2 + y^2 ), [interval(-10000, 10001), interval(-10000, 10001)]);
 
 julia> global_min
-[0, 2.33167e-08]
+[0.0, 3.63963e-08]_com
 
 julia> minimisers
-3-element Array{IntervalArithmetic.IntervalBox{2,Float64},1}:
- [-0.000107974, 0.000488103] × [-0.000107974, 0.000488103]
- [-0.000107974, 0.000488103] × [-0.000704051, -0.000107973]
- [-0.000704051, -0.000107973] × [-0.000107974, 0.000488103]
+3-element Vector{Vector{Interval{Float64}}}:
+ [[-0.000412491, 0.00014269]_com, [-0.000412491, 0.00014269]_com]
+ [[-0.000412491, 0.00014269]_com, [0.000142689, 0.000706613]_com]
+ [[0.000142689, 0.000706613]_com, [-0.000412491, 0.00014269]_com]
 ```
-Note that the last two `IntervalBox`es do not actually contain the global minimum;
+
+Note that the last two `Vector` of `Interval`s do not actually contain the global minimum;
 decreasing the tolerance (maximum allowed box diameter) removes them:
 
 ```
-julia> @time global_min, minimisers = minimise(  X -> ( (x,y) = X; x^2 + y^2 ),
-                                                               (-10000..10001) × (-10000..10001), 1e-5 );
-  0.047196 seconds (50.72 k allocations: 2.180 MiB)
+julia> global_min, minimisers = minimise(X -> ( (x,y) = X; x^2 + y^2 ), [interval(-10000, 10001), interval(-10000, 10001)]; tol = 1e-8);
 
 julia> minimisers
-1-element Array{IntervalArithmetic.IntervalBox{2,Float64},1}:
- [-5.52321e-06, 3.79049e-06] × [-5.52321e-06, 3.79049e-06]
+1-element Vector{Vector{Interval{Float64}}}:
+ [[-4.74512e-09, 4.41017e-09]_com, [-4.74512e-09, 4.41017e-09]_com]
  ```
 
-## Author
-
-- [David P. Sanders](http://sistemas.fciencias.unam.mx/~dsanders),
-Departamento de Física, Facultad de Ciencias, Universidad Nacional Autónoma de México (UNAM)
-
-
-## References:
+## References
 
 - *Validated Numerics: A Short Introduction to Rigorous Computations*, W. Tucker, Princeton University Press (2010)
 
@@ -94,6 +73,3 @@ Departamento de Física, Facultad de Ciencias, Universidad Nacional Autónoma de
 - van Emden M.H., Moa B. (2004). Termination Criteria in the Moore-Skelboe Algorithm for Global Optimization by Interval Arithmetic. In: Floudas C.A., Pardalos P. (eds), *Frontiers in Global Optimization. Nonconvex Optimization and Its Applications*, vol. 74. Springer, Boston, MA. [Preprint](http://webhome.cs.uvic.ca/~vanemden/Publications/mooreSkelb.pdf)
 
 - H. Ratschek and J. Rokne, [*New Computer Methods for Global Optimization*](http://pages.cpsc.ucalgary.ca/~rokne/global_book.pdf)
-
-## Acknowledements
-Financial support is acknowledged from DGAPA-UNAM PAPIIT grant IN-117117.
