@@ -1,12 +1,12 @@
 ﻿numeric_type(x::Interval) = IntervalArithmetic.numtype(x)
 numeric_type(v::AbstractVector{<:Interval}) = mapreduce(IntervalArithmetic.numtype, IntervalArithmetic.promote_numtype, v)
 
-_bisect(X::Interval) = bisect(X)
+_bisect(X::Interval) = bisect(X, 0.49609375)
 
-function _bisect(X::AbstractVector{<:Interval})
+function _bisect(X::AbstractVector{<:Interval}) # bisect along the largest dimension
     i = argmax(diam.(X)) # find longest side
 
-    x1, x2 = _bisect(X[i],)
+    x1, x2 = _bisect(X[i])
 
     X1 = copy(X); X1[i] = x1
     X2 = copy(X); X2[i] = x2
