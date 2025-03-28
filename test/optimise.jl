@@ -103,7 +103,7 @@ using IntervalArithmetic.Symbols
         end
 
         @testset "Non smooth function in 2D" begin
-            global_min, minimisers = minimise( X -> ( (x,y) = X; abs(x-y) + abs(x) ), (-1..1) × (-1..1), structure = Structure )
+            global_min, minimisers = minimise( X -> ( (x,y) = X; abs(x-y) + abs(x) ), [(-1..1), (-1..1)], structure = Structure )
             @test isequal_interval(global_min, 0..0) # it must return the exact minimum (if mid is used to find the first global_min)
             @test all(all(issubset_interval.(X, [(-2e-3.. 2e-3), (-2e-3..2e-3)])) for X in minimisers)
         end
