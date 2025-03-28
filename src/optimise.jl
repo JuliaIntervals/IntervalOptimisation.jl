@@ -46,7 +46,7 @@ function minimise(f, X::T; structure = HeapedVector, tol=1e-3) where {T}
         # Remove all boxes whose lower bound is greater than the current one:
         filter_elements!(working, (X, global_min))
 
-        if diam(X) < tol
+        if maximum(diam, X) < tol
             push!(minimizers, X)
         else
             X1, X2 = bisect(X)
