@@ -1,5 +1,5 @@
-﻿numeric_type(::Interval{T}) where {T} = T
-numeric_type(::IntervalBox{N, T}) where {N, T} = T
+﻿numeric_type(x::Interval) = IntervalArithmetic.numtype(x)
+numeric_type(v::AbstractVector{<:Interval}) = mapreduce(IntervalArithmetic.numtype, IntervalArithmetic.promote_numtype, v)
 
 """
     minimise(f, X, structure = SortedVector, tol=1e-3)
@@ -8,7 +8,7 @@ numeric_type(::IntervalBox{N, T}) where {N, T} = T
     or
     minimise(f, X, tol=1e-3) in this case the default value of "structure" is "HeapedVector"
 
-Find the global minimum of the function `f` over the `Interval` or `IntervalBox` `X`
+Find the global minimum of the function `f` over the `Interval` or `AbstractVector{<:Interval}` `X`
 using the Moore-Skelboe algorithm. The way in which vector elements are
 kept arranged can be either a heaped array or a sorted array.
 If you not specify any particular strategy to keep vector elements arranged then
@@ -20,11 +20,11 @@ Returns an interval containing the global minimum, and a list of boxes that cont
 """
 function minimise(f, X::T; structure = HeapedVector, tol=1e-3) where {T}
     nT = numeric_type(X)
-    
+
     # list of boxes with corresponding lower bound, arranged according to selected structure :
-    working = structure([(X, nT(∞))], x->x[2])
+    working = structure([(X, nT(Inf))], x->x[2])
     minimizers = T[]
-    global_min = nT(∞)  # upper bound
+    global_min = nT(Inf)  # upper bound
 
     num_bisections = 0
 
@@ -37,14 +37,14 @@ function minimise(f, X::T; structure = HeapedVector, tol=1e-3) where {T}
         end
 
         # find candidate for upper bound of global minimum by just evaluating a point in the interval:
-        m = sup(f(Interval.(mid.(X))))   # evaluate at midpoint of current interval
+        m = sup(f(interval.(mid.(X))))   # evaluate at midpoint of current interval
 
         if m < global_min
             global_min = m
         end
 
         # Remove all boxes whose lower bound is greater than the current one:
-        filter_elements!(working , (X, global_min) )
+        filter_elements!(working, (X, global_min))
 
         if diam(X) < tol
             push!(minimizers, X)
@@ -59,7 +59,7 @@ function minimise(f, X::T; structure = HeapedVector, tol=1e-3) where {T}
 
     lower_bound = minimum(inf.(f.(minimizers)))
 
-    return Interval(lower_bound, global_min), minimizers
+    return interval(lower_bound, global_min), minimizers
 end
 
 """
@@ -69,7 +69,7 @@ end
     or
     maximise(f, X, tol=1e-3) in this case the default value of "structure" is "HeapedVector"
 
-Find the global maximum of the function `f` over the `Interval` or `IntervalBox` `X`
+Find the global maximum of the function `f` over the `Interval` or `AbstractVector{<:Interval}` `X`
 using the Moore-Skelboe algorithm. See [`minimise`](@ref) for a description
 of the available options.
 """

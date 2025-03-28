@@ -1,4 +1,4 @@
-# `IntervalOptimisation.jl`
+# IntervalOptimisation
 
 [![github badge][gh_badge]][gh_url]
 [![doc badge][doc_badge]][doc_url]
@@ -26,7 +26,7 @@ Documentation for the package is available [here][doc_url].
 
 The best way to learn how to use the package is to look at the tutorial, available in the organisation webpage [here](https://juliaintervals.github.io/pages/tutorials/tutorialOptimisation/).
 
-## Usage  
+## Usage
 
 Functions `minimise` and `maximise` are provided to find the **global** minimum or maximum, respectively, of a standard Julia function `f` of one or several variables.
 
