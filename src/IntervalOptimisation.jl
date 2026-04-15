@@ -16,6 +16,7 @@ using .HeapedVectors
 using IntervalArithmetic
 
 include("optimise.jl")
+include("nlp.jl")
 
 
 const minimize = minimise
