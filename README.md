@@ -64,6 +64,37 @@ julia> minimisers
  [[-4.74512e-09, 4.41017e-09]_com, [-4.74512e-09, 4.41017e-09]_com]
  ```
 
+#### JuMP
+
+IntervalOptimisation can be used as a solver through [JuMP](https://github.com/jump-dev/JuMP.jl) via
+[NLPModelsJuMP](https://github.com/JuliaSmoothOptimizers/NLPModelsJuMP.jl):
+
+```julia
+using JuMP, NLPModelsJuMP, IntervalOptimisation
+
+model = Model(NLPModelsJuMP.Optimizer)
+set_attribute(model, "solver", IntervalOptimiser)
+set_attribute(model, "tol", 1e-5)
+
+@variable(model, -10 <= x <= 10)
+@objective(model, Min, (x - 3)^2 + 1)
+optimize!(model)
+
+julia> value(x)
+3.0000152587890625
+
+julia> objective_value(model)
+1.0000000002328306
+```
+
+The full interval enclosure of the global minimum and the minimizer boxes are available
+through solver-specific attributes:
+
+```julia
+julia> get_attribute(model, RawStatusString())  # underlying solver status
+"first-order stationary"
+```
+
 ## References
 
 - *Validated Numerics: A Short Introduction to Rigorous Computations*, W. Tucker, Princeton University Press (2010)

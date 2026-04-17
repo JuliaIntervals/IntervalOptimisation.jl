@@ -31,7 +31,7 @@ function heaping(v, by)
 end
 
 function floatup!(ar, index, by)
-    par = convert(Int, floor(index/2))
+    par = div(index, 2)
     if index <= 1
         return ar
     end
