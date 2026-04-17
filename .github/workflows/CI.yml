@@ -11,6 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         version:
+          - 'lts'
           - '1'
           - 'nightly'
         os:
@@ -18,10 +19,10 @@ jobs:
           - macOS-latest
           - windows-latest
         arch:
-          - x64
+          - default # x64 for Ubuntu and Windows and aarch64for Mac OS
     steps:
       - uses: actions/checkout@v6
-      - uses: julia-actions/setup-julia@v2
+      - uses: julia-actions/setup-julia@v3
         with:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
@@ -31,4 +32,4 @@ jobs:
       - uses: julia-actions/julia-processcoverage@v1
       - uses: codecov/codecov-action@v6
         with:
-          file: lcov.info
+          files: lcov.info
